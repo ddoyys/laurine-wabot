@@ -1,6 +1,4 @@
-# readme.md  
-
-## hello everyone  
+## hello everyone 👋
 ![project thumbnail](https://files.catbox.moe/1f6wnp.jpg)  
 
 welcome to this repository.  

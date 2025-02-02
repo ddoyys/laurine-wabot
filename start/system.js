@@ -77,7 +77,6 @@ module.exports = client = async (client, m, chatUpdate, store) => {
         
         const {
             smsg,
-            resize,
             fetchJson, 
             sleep,
             formatSize

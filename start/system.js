@@ -190,8 +190,8 @@ module.exports = client = async (client, m, chatUpdate, store) => {
                 let mbut = `hi ${pushname}, i am automated system (WhatsApp bot) that can help to do something search and get data/informasi only through WhatsApp 
 
 information:
- ▢ your ID: 6816288495
- ▢ username: @kyuucode
+ ▢ status: ${client.public ? 'public' : 'self'}
+ ▢ username: @${m.sender.split('@')[0]} 
  ▢ RAM: ${formattedUsedMem} / ${formattedTotalMem}
 
 commands:

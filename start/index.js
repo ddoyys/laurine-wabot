@@ -5,8 +5,8 @@
 */
   
 console.clear();
-console.log('Starting...');
-require('../setting/config');
+console.log('starting...');
+require('../settings/config');
 
 const { 
     default: makeWASocket, 

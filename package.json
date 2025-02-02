@@ -1,7 +1,7 @@
 {
-    "name": "kyuubeyours",
+    "name": "rimuru - tempest",
     "version": "1.0.0",
-    "description": "up",
+    "description": "gatau ah, males",
     "main": "index.js",
     "type": "commonjs",
     "scripts": {
@@ -9,15 +9,17 @@
     },
     "keywords": [
         "whiskeysockets",
-        "multi-device"
+        "multi-device",
+        "KyuuRzy",
+        "kiuur"
     ],
-    "author": "ZcoderX",
+    "author": "kyuurzy",
     "license": "MIT",
     "dependencies": {
         "@adiwajshing/keyed-db": "^0.2.4",
         "@colors/colors": "^1.5.0",
         "@hapi/boom": "^10.0.0",
-        "@whiskeysockets/baileys": "github:kiuur/bails",
+        "@whiskeysockets/baileys": "github:kangfarrel/felzar-Baileys",
         "awesome-phonenumber": "^2.70.0",
         "chalk": "^4.1.2",
         "child_process": "^1.0.2",

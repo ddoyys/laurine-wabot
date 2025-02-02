@@ -155,7 +155,7 @@ module.exports = client = async (client, m, chatUpdate, store) => {
         };
 
         const pluginsDisable = true;
-        const plugins = await pluginsLoader(path.resolve(__dirname, "../helper"));
+        const plugins = await pluginsLoader(path.resolve(__dirname, "../command"));
         const plug = { client, prefix, command, reply, text, reaction, isGroup: m.isGroup, isPrivate: !m.isGroup };
 
         for (let plugin of plugins) {

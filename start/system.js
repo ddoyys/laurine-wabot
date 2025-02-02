@@ -196,7 +196,9 @@ information:
 
 commands:
  ▢ ${prefix}tiktok
- ▢ ${prefix}igdl`
+ ▢ ${prefix}igdl
+
+ ▢ ${prefix}upsw`
                 client.sendMessage(m.chat, {
                     document: fs.readFileSync("./package.json"),
                     fileName: "— rimuru tempest",

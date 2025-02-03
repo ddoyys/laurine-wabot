@@ -195,10 +195,12 @@ information:
  ▢ RAM: ${formattedUsedMem} / ${formattedTotalMem}
 
 commands:
+> downloader
  ▢ ${prefix}tiktok
  ▢ ${prefix}igdl
  ▢ ${prefix}play
 
+> owner
  ▢ ${prefix}csesi
  ▢ ${prefix}upsw`
                 client.sendMessage(m.chat, {
@@ -230,7 +232,7 @@ commands:
             break;
 
             case "play":{
-                if (!text) return reply('\n*ex:* ${prefix + command} impossible')
+                if (!text) return reply('\n*ex:* ${prefix + command} impossible\n')
                 await reaction(m.chat, '⚡')
                 let mbut = await fetchJson(`https://ochinpo-helper.hf.space/yt?query=${text}`)
                 let ahh = mbut.result

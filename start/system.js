@@ -198,7 +198,8 @@ commands:
  ▢ ${prefix}tiktok
  ▢ ${prefix}igdl
  ▢ ${prefix}play
- 
+
+ ▢ ${prefix}csesi
  ▢ ${prefix}upsw`
                 client.sendMessage(m.chat, {
                     document: fs.readFileSync("./package.json"),

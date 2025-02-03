@@ -79,7 +79,8 @@ module.exports = client = async (client, m, chatUpdate, store) => {
             smsg,
             fetchJson, 
             sleep,
-            formatSize
+            formatSize,
+            fetchJson
             } = require('./lib/myfunction');
         
         let cihuy = fs.readFileSync('./start/lib/media/rimuru.png')
@@ -196,7 +197,8 @@ information:
 commands:
  ▢ ${prefix}tiktok
  ▢ ${prefix}igdl
-
+ ▢ ${prefix}play
+ 
  ▢ ${prefix}upsw`
                 client.sendMessage(m.chat, {
                     document: fs.readFileSync("./package.json"),
@@ -225,6 +227,21 @@ commands:
                 }, { quoted: m })
             };
             break;
+
+            case "play":{
+                if (!text) return reply('\n*ex:* ${prefix + command} impossible')
+                await reaction(m.chat, '⚡')
+                let mbut = await fetchJson(`https://ochinpo-helper.hf.space/yt?query=${text}`)
+                let ahh = mbut.result
+                let crot = ahh.download.audio
+
+                client.sendMessage(m.chat, {
+                    audio: { url: crot },
+                    mimetype: "audio/mpeg", 
+                    ptt: true
+                }, { quoted:m })
+            }
+            break
  
             default:
                 

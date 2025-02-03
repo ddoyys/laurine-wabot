@@ -79,8 +79,7 @@ module.exports = client = async (client, m, chatUpdate, store) => {
             smsg,
             fetchJson, 
             sleep,
-            formatSize,
-            fetchJson
+            formatSize
             } = require('./lib/myfunction');
         
         let cihuy = fs.readFileSync('./start/lib/media/rimuru.png')
@@ -232,7 +231,7 @@ commands:
             break;
 
             case "play":{
-                if (!text) return reply('\n*ex:* ${prefix + command} impossible\n')
+                if (!text) return reply(`\n*ex:* ${prefix + command} impossible\n`)
                 await reaction(m.chat, '⚡')
                 let mbut = await fetchJson(`https://ochinpo-helper.hf.space/yt?query=${text}`)
                 let ahh = mbut.result

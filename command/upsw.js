@@ -45,5 +45,6 @@ let handler = async (m, { client, text, reply }) => {
 handler.help = ['upsw'];
 handler.tags = ['owner'];
 handler.command = ['upsw'];
+handler.owner = true;
 
 module.exports = handler;

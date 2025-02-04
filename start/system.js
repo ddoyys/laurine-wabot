@@ -201,7 +201,9 @@ commands:
 
 > owner
  ▢ ${prefix}csesi
- ▢ ${prefix}upsw`
+ ▢ ${prefix}upsw
+ ▢ ${prefix}public
+ ▢ ${prefix}self`
                 client.sendMessage(m.chat, {
                     document: fs.readFileSync("./package.json"),
                     fileName: "— rimuru tempest",
@@ -244,7 +246,21 @@ commands:
                 }, { quoted:m })
             }
             break
- 
+                
+            case "public":{
+                if (!Access) return reply(mess.owner) 
+                client.public = true
+                reply(`successfully changed to ${command}`)
+            }
+            break
+            
+            case "self":{
+                if (!Access) return reply(mess.owner) 
+                client.public = false
+                reply(`successfully changed to ${command}`)
+            }
+            break
+                
             default:
                 
                 if (budy.startsWith('>')) {

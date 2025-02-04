@@ -46,7 +46,8 @@ const {
 
 const {
     smsg,
-    sleep
+    sleep,
+    getBuffer
 } = require('./start/lib/myfunction');
 
 const { 

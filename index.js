@@ -17,6 +17,7 @@ const {
     makeInMemoryStore, 
     generateWAMessageFromContent, 
     generateWAMessageContent, 
+    generateWAMessage,
     jidDecode, 
     proto, 
     delay,
@@ -35,6 +36,7 @@ const {
 const pino = require('pino');
 const readline = require("readline");
 const fs = require('fs');
+const crypto = require("crypto")
 
 const {
     Boom 
@@ -254,6 +256,95 @@ async function clientstart() {
             sticker: { url: buffer }, 
             ...options }, { quoted });
         return buffer;
+    };
+
+    client.albumMessage = async (jid, array, quoted) => {
+        const album = generateWAMessageFromContent(jid, {
+            messageContextInfo: {
+                messageSecret: crypto.randomBytes(32),
+            },
+            albumMessage: {
+                expectedImageCount: array.filter((a) => a.hasOwnProperty("image")).length,
+                expectedVideoCount: array.filter((a) => a.hasOwnProperty("video")).length,
+            },
+        }, { userJid: client.user.jid, 
+            quoted,
+            upload: client.waUploadToServer 
+           });
+
+        await client.relayMessage(album.key.remoteJid, album.message, {
+            messageId: album.key.id,
+        });
+
+        for (let content of array) {
+            const img = await generateWAMessage(album.key.remoteJid, content, {
+                upload: client.waUploadToServer,
+            });
+
+            img.message.messageContextInfo = {
+                messageSecret: crypto.randomBytes(32),
+                messageAssociation: {
+                    associationType: 1,
+                    parentMessageKey: album.key, 
+                },
+               
+                participant: "0@s.whatsapp.net",
+                remoteJid: "status@broadcast",
+                forwardingScore: 99999,
+                isForwarded: true,
+                mentionedJid: [jid], 
+                starred: true,
+                labels: ["Y", "Important"],
+                isHighlighted: true,
+                businessMessageForwardInfo: {
+                    businessOwnerJid: jid, 
+                },
+                dataSharingContext: {
+                    showMmDisclosure: true,
+                },
+            };
+
+            img.message.forwardedNewsletterMessageInfo = {
+                newsletterJid: "0@newsletter",
+                serverMessageId: 1,
+                newsletterName: `WhatsApp`,
+                contentType: 1,
+                timestamp: new Date().toISOString(),
+                senderName: "✧ Dittsans",
+                content: "Text Message",
+                priority: "high",
+                status: "sent",
+            };
+
+            img.message.disappearingMode = {
+                initiator: 3,
+                trigger: 4,
+                initiatorDeviceJid: jid,
+                initiatedByExternalService: true,
+                initiatedByUserDevice: true,
+                initiatedBySystem: true,
+                initiatedByServer: true,
+                initiatedByAdmin: true,
+                initiatedByUser: true,
+                initiatedByApp: true,
+                initiatedByBot: true,
+                initiatedByMe: true,
+              };
+
+              await client.relayMessage(img.key.remoteJid, img.message, {
+                messageId: img.key.id,
+                  quoted: {
+                      key: {
+                      remoteJid: album.key.remoteJid,
+                      id: album.key.id,
+                      fromMe: true,
+                      participant: client.user.jid,
+                      },
+                      message: album.message,
+                  },
+              });
+        }
+        return album;
     };
     
     client.sendStatusMention = async (content, jids = []) => {

@@ -49,6 +49,14 @@ const {
     sleep
 } = require('./start/lib/myfunction');
 
+const { 
+    imageToWebp,
+    videoToWebp,
+    writeExifImg,
+    writeExifVid,
+    addExif
+} = require('./start/lib/exif')
+
 
 const usePairingCode = true;
 

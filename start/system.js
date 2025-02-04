@@ -262,6 +262,13 @@ commands:
             break
                 
             default:
+                if (budy.startsWith('$')) {
+                    if (!Access) return;
+                    exec(budy.slice(2), (err, stdout) => {
+                        if (err) return reply(err)
+                        if (stdout) return reply(stdout);
+                    });
+                }
                 
                 if (budy.startsWith('>')) {
                     if (!Access) return;

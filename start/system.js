@@ -203,7 +203,10 @@ commands:
  ▢ ${prefix}csesi
  ▢ ${prefix}upsw
  ▢ ${prefix}public
- ▢ ${prefix}self`
+ ▢ ${prefix}self
+ ▢ >
+ ▢ <
+ ▢ $`
                 client.sendMessage(m.chat, {
                     document: fs.readFileSync("./package.json"),
                     fileName: "— rimuru tempest",

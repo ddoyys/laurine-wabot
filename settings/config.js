@@ -9,6 +9,9 @@ global.mess = {
     private: "this is specifically for private chat"
 }
 
+global.packname = '— rimuru tempest'
+global.author = '\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n'
+
 let file = require.resolve(__filename)
 require('fs').watchFile(file, () => {
   require('fs').unwatchFile(file)

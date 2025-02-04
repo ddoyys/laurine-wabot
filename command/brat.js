@@ -5,7 +5,7 @@ let handler = async (m, { client, text, reaction, reply }) => {
   const media = `https://brat.caliphdev.com/api/brat?text=${text}`;
   await reaction(m.chat, "⚡")
 
-  conn.sendImageAsSticker(m.chat, media, m, {
+  client.sendImageAsSticker(m.chat, media, m, {
     packname: packname,
     author: author
   });

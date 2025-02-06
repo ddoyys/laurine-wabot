@@ -6,7 +6,8 @@ global.status = false
 global.mess = {
     owner: "no, this is for owners only",
     group: "this is for groups only",
-    private: "this is specifically for private chat"
+    private: "this is specifically for private chat",
+    admin: "only admin can use the feature"
 }
 
 global.packname = '— rimuru tempest'

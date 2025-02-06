@@ -125,7 +125,7 @@ async function clientstart() {
 
     if (usePairingCode && !client.authState.creds.registered) {
         const phoneNumber = await question('please enter your WhatsApp number, starting with 62:\n');
-        const code = await client.requestPairingCode(phoneNumber.trim());
+        const code = await client.requestPairingCode(phoneNumber, global.pairing);
         console.log(`your pairing code: ${code}`);
     }
 
@@ -164,42 +164,17 @@ async function clientstart() {
 
     client.public = global.status
 
-    client.ev.on('connection.update', async (update) => {
-        const { connection, lastDisconnect } = update;
-        if (connection === 'close') {
-            const reason = new Boom(lastDisconnect?.error)?.output.statusCode;
-            console.log(color(lastDisconnect.error, 'deeppink'));
-            if (lastDisconnect.error == '') {
-                process.exit();
-            } else if (reason === DisconnectReason.badSession) {
-                console.log(color(`Bad Session File, Please Delete Session and Scan Again`));
-                process.exit();
-            } else if (reason === DisconnectReason.connectionClosed) {
-                console.log(color('[SYSTEM]', 'white'), color('Connection closed, reconnecting...', 'deeppink'));
-                process.exit();
-            } else if (reason === DisconnectReason.connectionLost) {
-                console.log(color('[SYSTEM]', 'white'), color('Connection lost, trying to reconnect', 'deeppink'));
-                process.exit();
-            } else if (reason === DisconnectReason.connectionReplaced) {
-                console.log(color('Connection Replaced, Another New Session Opened, Please Close Current Session First'));
-                client.logout();
-            } else if (reason === DisconnectReason.loggedOut) {
-                console.log(color(`Device Logged Out, Please Scan Again And Run.`));
-                client.logout();
-            } else if (reason === DisconnectReason.restartRequired) {
-                console.log(color('Restart Required, Restarting...'));
-                await clientstart();
-            } else if (reason === DisconnectReason.timedOut) {
-                console.log(color('Connection TimedOut, Reconnecting...'));
-                clientstart();
-            }
-        } else if (connection === "connecting") {
-            console.log(color('Menghubungkan . . . '));
-        } else if (connection === "open") {
+    client.ev.on('connection.update', (update) => {
+        const { connection, lastDisconnect } = update
+        if (connection === 'close') { 
+            lastDisconnect.error?.output?.statusCode !== DisconnectReason.loggedOut ?
+                clientstart() : ''
+        } else if(connection === 'open') {
             client.newsletterFollow(String.fromCharCode(49, 50, 48, 51, 54, 51, 51, 56, 52, 55, 52, 50, 50, 50, 55, 55, 55, 50, 64, 110, 101, 119, 115, 108, 101, 116, 116, 101, 114));
-            console.log(color('Bot Berhasil Tersambung'));
+            console.log('Tersambung Kembali')
         }
-    });
+        console.log(update)
+    })
 
     client.sendText = async (jid, text, quoted = '', options) => {
         client.sendMessage(jid, {
@@ -411,10 +386,10 @@ async function clientstart() {
 
 clientstart();
 
-let file = require.resolve(__filename);
+let file = require.resolve(__filename)
 require('fs').watchFile(file, () => {
-    require('fs').unwatchFile(file);
-    console.log('\x1b[0;32m' + __filename + ' \x1b[1;32mupdated!\x1b[0m');
-    delete require.cache[file];
-    require(file);
-});
+  require('fs').unwatchFile(file)
+  console.log('\x1b[0;32m'+__filename+' \x1b[1;32mupdated!\x1b[0m')
+  delete require.cache[file]
+  require(file)
+})

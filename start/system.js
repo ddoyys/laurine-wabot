@@ -200,7 +200,6 @@ commands:
  ▢ ${prefix}play
 
 > group
- ▢ ${prefix}tagall
  ▢ ${prefix}hidetag
 
 > sticker
@@ -270,6 +269,25 @@ commands:
                 if (!Access) return reply(mess.owner) 
                 client.public = false
                 reply(`successfully changed to ${command}`)
+            }
+            break
+
+            case "h":
+            case "hidetag": {
+                if (!m.isGroup) return reply(mess.group)
+                if (!isAdmins && !Access) return reply(mess.admin)
+                if (m.quoted) {
+                    client.sendMessage(m.chat, {
+                        forward: m.quoted.fakeObj,
+                        mentions: participants.map(a => a.id)
+                    })
+                }
+                if (!m.quoted) {
+                    client.sendMessage(m.chat, {
+                        text: q ? q : '',
+                        mentions: participants.map(a => a.id)
+                    }, { quoted: m })
+                }
             }
             break
                 

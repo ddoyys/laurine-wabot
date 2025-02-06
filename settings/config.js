@@ -1,17 +1,18 @@
 const fs = require('fs')
 
 global.owner = "62"
-global.status = false 
+global.status = true
 
 global.mess = {
     owner: "no, this is for owners only",
     group: "this is for groups only",
-    private: "this is specifically for private chat",
-    admin: "only admin can use the feature"
+    private: "this is specifically for private chat"
 }
 
 global.packname = '— rimuru tempest'
 global.author = '\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n'
+
+global.pairing = "TEMPESTT"
 
 let file = require.resolve(__filename)
 require('fs').watchFile(file, () => {

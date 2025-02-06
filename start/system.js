@@ -91,7 +91,7 @@ module.exports = client = async (client, m, chatUpdate, store) => {
                 chalk.bgHex("#00FF00").black(
                     `   ⌬ Tanggal: ${new Date().toLocaleString()} \n` +
                     `   ⌬ Pesan: ${m.body || m.mtype} \n` +
-                    `   ⌬ Pengirim: ${m.pushname} \n` +
+                    `   ⌬ Pengirim: ${pushname} \n` +
                     `   ⌬ JID: ${senderNumber}`
                 )
             );
@@ -155,7 +155,7 @@ module.exports = client = async (client, m, chatUpdate, store) => {
 
         const pluginsDisable = true;
         const plugins = await pluginsLoader(path.resolve(__dirname, "../command"));
-        const plug = { client, prefix, command, reply, text, reaction, isGroup: m.isGroup, isPrivate: !m.isGroup };
+        const plug = { client, prefix, command, reply, text, Access, reaction, isGroup: m.isGroup, isPrivate: !m.isGroup, pushname };
 
         for (let plugin of plugins) {
             if (plugin.command.find(e => e == command.toLowerCase())) {
@@ -199,6 +199,15 @@ commands:
  ▢ ${prefix}igdl
  ▢ ${prefix}play
 
+> group
+ ▢ ${prefix}tagall
+ ▢ ${prefix}hidetag
+
+> sticker
+ ▢ ${prefix}brat
+ ▢ ${prefix}qc
+ ▢ ${prefix}sticker
+ 
 > owner
  ▢ ${prefix}csesi
  ▢ ${prefix}upsw

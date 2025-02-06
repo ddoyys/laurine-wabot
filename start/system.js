@@ -155,7 +155,7 @@ module.exports = client = async (client, m, chatUpdate, store) => {
 
         const pluginsDisable = true;
         const plugins = await pluginsLoader(path.resolve(__dirname, "../command"));
-        const plug = { client, prefix, command, reply, text, Access, reaction, isGroup: m.isGroup, isPrivate: !m.isGroup, pushname };
+        const plug = { client, prefix, command, reply, text, Access, reaction, isGroup: m.isGroup, isPrivate: !m.isGroup, pushname, quoted, mime };
 
         for (let plugin of plugins) {
             if (plugin.command.find(e => e == command.toLowerCase())) {

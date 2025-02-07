@@ -238,21 +238,23 @@ async function clientstart() {
             messageContextInfo: {
                 messageSecret: crypto.randomBytes(32),
             },
+            
             albumMessage: {
                 expectedImageCount: array.filter((a) => a.hasOwnProperty("image")).length,
                 expectedVideoCount: array.filter((a) => a.hasOwnProperty("video")).length,
             },
-        }, { userJid: client.user.jid, 
+        }, {
+            userJid: client.user.jid,
             quoted,
-            upload: client.waUploadToServer 
-           });
+            upload: client.waUploadToServer
+        });
 
-        await client.relayMessage(album.key.remoteJid, album.message, {
+        await client.relayMessage(jid, album.message, {
             messageId: album.key.id,
         });
 
         for (let content of array) {
-            const img = await generateWAMessage(album.key.remoteJid, content, {
+            const img = await generateWAMessage(jid, content, {
                 upload: client.waUploadToServer,
             });
 
@@ -260,19 +262,18 @@ async function clientstart() {
                 messageSecret: crypto.randomBytes(32),
                 messageAssociation: {
                     associationType: 1,
-                    parentMessageKey: album.key, 
-                },
-               
+                    parentMessageKey: album.key,
+                },    
                 participant: "0@s.whatsapp.net",
                 remoteJid: "status@broadcast",
                 forwardingScore: 99999,
                 isForwarded: true,
-                mentionedJid: [jid], 
+                mentionedJid: [jid],
                 starred: true,
                 labels: ["Y", "Important"],
                 isHighlighted: true,
                 businessMessageForwardInfo: {
-                    businessOwnerJid: jid, 
+                    businessOwnerJid: jid,
                 },
                 dataSharingContext: {
                     showMmDisclosure: true,
@@ -304,20 +305,20 @@ async function clientstart() {
                 initiatedByApp: true,
                 initiatedByBot: true,
                 initiatedByMe: true,
-              };
+            };
 
-              await client.relayMessage(img.key.remoteJid, img.message, {
+            await client.relayMessage(jid, img.message, {
                 messageId: img.key.id,
-                  quoted: {
-                      key: {
-                      remoteJid: album.key.remoteJid,
-                      id: album.key.id,
-                      fromMe: true,
-                      participant: client.user.jid,
-                      },
-                      message: album.message,
-                  },
-              });
+                quoted: {
+                    key: {
+                        remoteJid: album.key.remoteJid,
+                        id: album.key.id,
+                        fromMe: true,
+                        participant: client.user.jid,
+                    },
+                    message: album.message,
+                },
+            });
         }
         return album;
     };

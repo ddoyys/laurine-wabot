@@ -46,7 +46,9 @@ module.exports = client = async (client, m, chatUpdate, store) => {
         const senderNumber = sender.split('@')[0];
         const budy = (typeof m.text === 'string' ? m.text : '');
         const prefa = ["", "!", ".", ",", "🐤", "🗿"];
-        const prefix = /^[°zZ#$@+,.?=''():√%!¢£¥€π¤ΠΦ&><™©®Δ^βα¦|/\\©^]/.test(body) ? body.match(/^[°zZ#$@+,.?=''():√%¢£¥€π¤ΠΦ&><!™©®Δ^βα¦|/\\©^]/gi) : '.';
+
+        const prefixRegex = /^[°zZ#$@*+,.?=''():√%!¢£¥€π¤ΠΦ_&><`™©®Δ^βα~¦|/\\©^]/;
+        const prefix = prefixRegex.test(body) ? body.match(prefixRegex)[0] : '.';
         const from = m.key.remoteJid;
         const isGroup = from.endsWith("@g.us");
 
@@ -55,7 +57,8 @@ module.exports = client = async (client, m, chatUpdate, store) => {
         const Access = [botNumber, ...kontributor, ...global.owner].map(v => v.replace(/[^0-9]/g, '') + '@s.whatsapp.net').includes(m.sender)
         
         const isCmd = body.startsWith(prefix);
-        const command = body.slice(1).trim().split(/ +/).shift().toLowerCase();
+        const command = isCmd ? body.slice(prefix.length).trim().split(' ').shift().toLowerCase() : '';
+        const command2 = body.replace(prefix, '').trim().split(/ +/).shift().toLowerCase()
         const args = body.trim().split(/ +/).slice(1);
         const pushname = m.pushName || "No Name";
         const text = q = args.join(" ");
@@ -155,7 +158,7 @@ module.exports = client = async (client, m, chatUpdate, store) => {
 
         const pluginsDisable = true;
         const plugins = await pluginsLoader(path.resolve(__dirname, "../command"));
-        const plug = { client, prefix, command, reply, text, Access, reaction, isGroup: m.isGroup, isPrivate: !m.isGroup, pushname, quoted, mime };
+        const plug = { client, prefix, command, reply, text, Access, reaction, isGroup: m.isGroup, isPrivate: !m.isGroup, pushname, mime, quoted };
 
         for (let plugin of plugins) {
             if (plugin.command.find(e => e == command.toLowerCase())) {
@@ -200,13 +203,10 @@ commands:
  ▢ ${prefix}play
 
 > group
+ ▢ ${prefix}ftag
+ ▢ ${prefix}tagall
  ▢ ${prefix}hidetag
 
-> sticker
- ▢ ${prefix}brat
- ▢ ${prefix}qc
- ▢ ${prefix}sticker
- 
 > owner
  ▢ ${prefix}csesi
  ▢ ${prefix}upsw
@@ -271,7 +271,28 @@ commands:
                 reply(`successfully changed to ${command}`)
             }
             break
+                
+            case 'tagall':{
+                if (!isAdmins) return reply(mess.admin);
+                if (!m.isGroup) return reply(mess.group);
+                
+                const textMessage = args.join(" ") || "nothing";
+                let teks = `tagall message :\n> *${textMessage}*\n\n`;
 
+                const groupMetadata = await client.groupMetadata(m.chat);
+                const participants = groupMetadata.participants;
+
+                for (let mem of participants) {
+                    teks += `@${mem.id.split("@")[0]}\n`;
+                }
+
+                client.sendMessage(m.chat, {
+                    text: teks,
+                    mentions: participants.map((a) => a.id)
+                }, { quoted: m });
+            }
+            break         
+            
             case "h":
             case "hidetag": {
                 if (!m.isGroup) return reply(mess.group)
@@ -330,10 +351,10 @@ commands:
     }
 };
 
-let file = require.resolve(__filename);
+let file = require.resolve(__filename)
 require('fs').watchFile(file, () => {
-    require('fs').unwatchFile(file);
-    console.log('\x1b[0;32m' + __filename + ' \x1b[1;32mupdated!\x1b[0m');
-    delete require.cache[file];
-    require(file);
-});
+  require('fs').unwatchFile(file)
+  console.log('\x1b[0;32m'+__filename+' \x1b[1;32mupdated!\x1b[0m')
+  delete require.cache[file]
+  require(file)
+})

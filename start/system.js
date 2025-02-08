@@ -84,6 +84,12 @@ module.exports = client = async (client, m, chatUpdate, store) => {
             sleep,
             formatSize
             } = require('./lib/myfunction');
+     
+        const {
+            jadibot,
+	        stopjadibot,
+          	listjadibot
+        } = require('./jadibot')
         
         let cihuy = fs.readFileSync('./start/lib/media/rimuru.png')
        
@@ -203,10 +209,14 @@ commands:
  ▢ ${prefix}play
 
 > group
- ▢ ${prefix}ftag
  ▢ ${prefix}tagall
  ▢ ${prefix}hidetag
 
+> beta
+ ▢ ${prefix}jadibot
+ ▢ ${prefix}listjadibot
+ ▢ ${prefix}stopjadibot
+ 
 > owner
  ▢ ${prefix}csesi
  ▢ ${prefix}upsw
@@ -311,6 +321,37 @@ commands:
                 }
             }
             break
+              
+            case "jadibot": {
+                await reaction(m.chat, '✅')
+                try {
+                    await jadibot(client, m, m.sender)
+                } catch (error) {
+                    await reply(util.format(error), command)
+                }
+            }
+            break
+                
+            case "stopjadibot": {
+                await reaction(m.chat, '✅')
+                if (m.key.fromMe) return
+                try {
+                    await stopjadibot(client, m, m.sender)
+                } catch (error) {
+                    await reply(util.format(error), command)
+                }
+            }
+            break
+			
+            case "listjadibot": {
+                if (m.key.fromMe) return
+                try {
+                    listjadibot(client, m)
+                } catch (error) {
+                    await reply(util.format(error), command)
+                }
+            }
+            break           
                 
             default:
                 if (budy.startsWith('$')) {

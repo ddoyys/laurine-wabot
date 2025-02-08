@@ -216,7 +216,16 @@ commands:
  ▢ ${prefix}fast
  ▢ ${prefix}tupai
  ▢ ${prefix}blown
-
+ ▢ ${prefix}bass
+ ▢ ${prefix}smooth
+ ▢ ${prefix}deep
+ ▢ ${prefix}earrape 
+ ▢ ${prefix}nightcore
+ ▢ ${prefix}fat
+ ▢ ${prefix}robot
+ ▢ ${prefix}slow
+ ▢ ${prefix}reverse
+ 
 > beta
  ▢ ${prefix}jadibot
  ▢ ${prefix}listjadibot

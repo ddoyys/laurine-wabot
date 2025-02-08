@@ -34,6 +34,7 @@ const {
 } = require("@whiskeysockets/baileys");
 
 const pino = require('pino');
+const FileType = require('file-type');
 const readline = require("readline");
 const fs = require('fs');
 const crypto = require("crypto")
@@ -158,7 +159,10 @@ async function clientstart() {
     client.ev.on('contacts.update', update => {
         for (let contact of update) {
             let id = client.decodeJid(contact.id);
-            if (store && store.contacts) store.contacts[id] = { id, name: contact.notify };
+            if (store && store.contacts) store.contacts[id] = {
+                id,
+                name: contact.notify
+            };
         }
     });
 
@@ -212,6 +216,25 @@ async function clientstart() {
             ...options }, { quoted });
         return buffer;
     };
+    
+    client.downloadAndSaveMediaMessage = async (message, filename, attachExtension = true) => {
+        let quoted = message.msg ? message.msg : message;
+        let mime = (message.msg || message).mimetype || "";
+        let messageType = message.mtype ? message.mtype.replace(/Message/gi, "") : mime.split("/")[0];
+
+        const stream = await downloadContentFromMessage(quoted, messageType);
+        let buffer = Buffer.from([]);
+        for await (const chunk of stream) {
+            buffer = Buffer.concat([buffer, chunk]);
+        }
+
+        let type = await FileType.fromBuffer(buffer);
+        let trueFileName = attachExtension ? filename + "." + type.ext : filename;
+        await fs.writeFileSync(trueFileName, buffer);
+        
+        return trueFileName;
+    };
+
 
     client.sendVideoAsSticker = async (jid, path, quoted, options = {}) => {
         let buff = Buffer.isBuffer(path) ? 

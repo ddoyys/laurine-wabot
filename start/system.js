@@ -212,6 +212,11 @@ commands:
  ▢ ${prefix}tagall
  ▢ ${prefix}hidetag
 
+> voice
+ ▢ ${prefix}fast
+ ▢ ${prefix}tupai
+ ▢ ${prefix}blown
+
 > beta
  ▢ ${prefix}jadibot
  ▢ ${prefix}listjadibot

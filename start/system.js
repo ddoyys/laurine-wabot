@@ -335,7 +335,7 @@ commands:
                 }
             }
             break
-              
+            /* males fix 
             case "jadibot": {
                 await reaction(m.chat, '✅')
                 try {
@@ -366,7 +366,7 @@ commands:
                 }
             }
             break           
-                
+            */
             default:
                 if (budy.startsWith('$')) {
                     if (!Access) return;

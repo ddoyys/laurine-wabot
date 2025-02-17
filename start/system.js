@@ -317,6 +317,8 @@ commands:
             }
             break         
             
+       /* males fix, admin nak tido
+	    kiuu, k nya kunyuk
             case "h":
             case "hidetag": {
                 if (!m.isGroup) return reply(mess.group)
@@ -335,7 +337,7 @@ commands:
                 }
             }
             break
-            /* males fix 
+			
             case "jadibot": {
                 await reaction(m.chat, '✅')
                 try {

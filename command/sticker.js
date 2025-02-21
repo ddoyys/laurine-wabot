@@ -20,7 +20,7 @@ let handler = async (m, { client, text, reply, quoted, mime, prefix, command }) 
                 });
             await fs.unlinkSync(encmedia);
         } else {
-                return reply('\n*ex:* reply image/video ${prefix + command}\n');
+                return reply(`\n*ex:* reply image/video ${prefix + command}\n`);
         }
     } catch (error) {
         console.error(error);

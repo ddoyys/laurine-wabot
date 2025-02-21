@@ -5,7 +5,7 @@ let handler = async (m, { client, text, reaction, reply, prefix, command }) => {
   const media = `https://brat.caliphdev.com/api/brat/animate?text=${text}`;
   await reaction(m.chat, "⚡")
 
-  client.sendVideoSticker(m.chat, media, m, {
+  client.sendVideoAsSticker(m.chat, media, m, {
     packname: packname,
     author: author
   });

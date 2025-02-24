@@ -38,10 +38,7 @@ const FileType = require('file-type');
 const readline = require("readline");
 const fs = require('fs');
 const crypto = require("crypto")
-
-const {
-    Boom 
-} = require('@hapi/boom');
+const { Boom } = require('@hapi/boom');
 
 const { 
     color 
@@ -71,8 +68,6 @@ const question = (text) => {
     });
     return new Promise((resolve) => { rl.question(text, resolve) });
 }
-
-const store = makeInMemoryStore({ logger: pino().child({ level: 'silent', stream: 'store' }) });
 
 async function clientstart() {
 	const {
@@ -129,6 +124,13 @@ async function clientstart() {
         const code = await client.requestPairingCode(phoneNumber, global.pairing);
         console.log(`your pairing code: ${code}`);
     }
+    
+    const store = makeInMemoryStore({
+        logger: pino().child({ 
+            level: 'silent',
+            stream: 'store' 
+        }) 
+    });
 
     store.bind(client.ev);
     

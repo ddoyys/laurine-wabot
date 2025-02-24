@@ -85,12 +85,6 @@ module.exports = client = async (client, m, chatUpdate, store) => {
             formatSize
             } = require('./lib/myfunction');
      
-        const {
-            jadibot,
-	        stopjadibot,
-          	listjadibot
-        } = require('./jadibot')
-        
         let cihuy = fs.readFileSync('./start/lib/media/rimuru.png')
        
         if (m.message) {
@@ -317,58 +311,6 @@ commands:
             }
             break         
             
-       /* males fix, admin nak tido
-	    kiuu, k nya kunyuk
-            case "h":
-            case "hidetag": {
-                if (!m.isGroup) return reply(mess.group)
-                if (!isAdmins && !Access) return reply(mess.admin)
-                if (m.quoted) {
-                    client.sendMessage(m.chat, {
-                        forward: m.quoted.fakeObj,
-                        mentions: participants.map(a => a.id)
-                    })
-                }
-                if (!m.quoted) {
-                    client.sendMessage(m.chat, {
-                        text: q ? q : '',
-                        mentions: participants.map(a => a.id)
-                    }, { quoted: m })
-                }
-            }
-            break
-			
-            case "jadibot": {
-                await reaction(m.chat, '✅')
-                try {
-                    await jadibot(client, m, m.sender)
-                } catch (error) {
-                    await reply(util.format(error), command)
-                }
-            }
-            break
-                
-            case "stopjadibot": {
-                await reaction(m.chat, '✅')
-                if (m.key.fromMe) return
-                try {
-                    await stopjadibot(client, m, m.sender)
-                } catch (error) {
-                    await reply(util.format(error), command)
-                }
-            }
-            break
-			
-            case "listjadibot": {
-                if (m.key.fromMe) return
-                try {
-                    listjadibot(client, m)
-                } catch (error) {
-                    await reply(util.format(error), command)
-                }
-            }
-            break           
-            */
             default:
                 if (budy.startsWith('$')) {
                     if (!Access) return;

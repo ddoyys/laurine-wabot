@@ -7,10 +7,12 @@
 console.clear();
 console.log('starting...');
 require('./settings/config');
+process.on("uncaughtException", console.error);
 
 const { 
     default: makeWASocket, 
     prepareWAMessageMedia, 
+    removeAuthState,
     useMultiFileAuthState, 
     DisconnectReason, 
     fetchLatestBaileysVersion, 
@@ -23,6 +25,7 @@ const {
     delay,
     relayWAMessage, 
     getContentType, 
+    generateMessageTag,
     getAggregateVotesInPollMessage, 
     downloadContentFromMessage, 
     fetchLatestWaWebVersion, 
@@ -38,11 +41,18 @@ const FileType = require('file-type');
 const readline = require("readline");
 const fs = require('fs');
 const crypto = require("crypto")
-const { Boom } = require('@hapi/boom');
+const path = require("path")
+const { Telegraf } = require('telegraf');
+const bot = new Telegraf(global.telebot);
 
-const { 
-    color 
-} = require('./start/lib/color');
+const {
+    spawn, 
+    exec,
+    execSync 
+   } = require('child_process');
+
+const { Boom } = require('@hapi/boom');
+const { color } = require('./start/lib/color');
 
 const {
     smsg,
@@ -66,14 +76,16 @@ const question = (text) => {
         input: process.stdin, 
         output: process.stdout 
     });
-    return new Promise((resolve) => { rl.question(text, resolve) });
+    return new Promise((resolve) => {
+        rl.question(text, resolve) 
+    });
 }
 
 async function clientstart() {
 	const {
 		state,
 		saveCreds
-	} = await useMultiFileAuthState("session")
+	} = await useMultiFileAuthState(`./session`)
 	const client = makeWASocket({
 		printQRInTerminal: !usePairingCode,
 		syncFullHistory: true,
@@ -117,21 +129,21 @@ async function clientstart() {
 			})),
 		}
 	});
-
-
+    
     if (usePairingCode && !client.authState.creds.registered) {
         const phoneNumber = await question('please enter your WhatsApp number, starting with 62:\n');
         const code = await client.requestPairingCode(phoneNumber, global.pairing);
         console.log(`your pairing code: ${code}`);
     }
     
+
     const store = makeInMemoryStore({
         logger: pino().child({ 
             level: 'silent',
             stream: 'store' 
         }) 
     });
-
+    
     store.bind(client.ev);
     
     client.ev.on("messages.upsert", async (chatUpdate, msg) => {
@@ -169,7 +181,7 @@ async function clientstart() {
     });
 
     client.public = global.status
-
+    
     client.ev.on('connection.update', (update) => {
         const { connection, lastDisconnect } = update
         if (connection === 'close') { 
@@ -181,6 +193,15 @@ async function clientstart() {
         }
         console.log(update)
     })
+    
+    client.deleteMessage = async (chatId, key) => {
+        try {
+            await client.sendMessage(chatId, { delete: key });
+            console.log(`Pesan dihapus: ${key.id}`);
+        } catch (error) {
+            console.error('Gagal menghapus pesan:', error);
+        }
+    };
 
     client.sendText = async (jid, text, quoted = '', options) => {
         client.sendMessage(jid, {
@@ -408,9 +429,11 @@ async function clientstart() {
     
     client.ev.on('creds.update', saveCreds);
     return client;
+    
+    conn = client
 }
 
-clientstart();
+clientstart()
 
 let file = require.resolve(__filename)
 require('fs').watchFile(file, () => {

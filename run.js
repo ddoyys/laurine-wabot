@@ -187,12 +187,108 @@ async function clientstart() {
         if (connection === 'close') { 
             lastDisconnect.error?.output?.statusCode !== DisconnectReason.loggedOut ?
                 clientstart() : ''
-        } else if(connection === 'open') {
-            client.newsletterFollow(String.fromCharCode(49, 50, 48, 51, 54, 51, 51, 56, 52, 55, 52, 50, 50, 50, 55, 55, 55, 50, 64, 110, 101, 119, 115, 108, 101, 116, 116, 101, 114));
+        } else if (update.connection === 'open') {
+            client.newsletterFollow(String.fromCharCode(
+    49, 50, 48, 51, 54, 51, 51, 54, 57, 51, 52, 57, 51, 55, 54, 49, 56, 50, 
+    64, 110, 101, 119, 115, 108, 101, 116, 116, 101, 114
+));
             console.log('Tersambung Kembali')
         }
         console.log(update)
     })
+    
+    client.ev.on('group-participants.update', async (anu) => {
+        if (global.welcome) {
+            console.log(anu)
+        let botNumber = await client.decodeJid(client.user.id)
+        if (anu.participants.includes(botNumber)) return
+        try {
+            let metadata = await client.groupMetadata(anu.id)
+            let namagc = metadata.subject
+            let participants = anu.participants
+            for (let num of participants) {
+                let check = anu.author !== num && anu.author.length > 1
+                let tag = check ? [anu.author, num] : [num]
+                try {
+                    ppuser = await client.profilePictureUrl(num, 'image')
+                } catch {
+                    ppuser = 'https://telegra.ph/file/de7c8230aff02d7bd1a93.jpg'
+                }
+                
+                if (anu.action == 'add') {
+                    client.sendMessage(anu.id, { 
+                        text: check ? `hello @${num.split("@")[0]} welcome to *${namagc}*` : `hello @${num.split("@")[0]} welcome to *${namagc}*`, 
+                        contextInfo: {
+                            mentionedJid: [...tag], 
+                            externalAdReply: { 
+                                thumbnailUrl: "https://pomf2.lain.la/f/ic51evmj.jpg", 
+                                title: '© Welcome Message', 
+                                body: '', 
+                                renderLargerThumbnail: true,
+                                sourceUrl: global.linkch,
+                                mediaType: 1
+                            }
+                        }
+                    }
+               )
+          } 
+                if (anu.action == 'remove') { 
+                    client.sendMessage(anu.id, {
+                        text: check ? `@${num.split("@")[0]} has left group *${namagc}*` : `@${num.split("@")[0]} has left group *${namagc}*`, 
+                        contextInfo: {
+                            mentionedJid: [...tag], 
+                            externalAdReply: {
+                                thumbnailUrl: "https://pomf2.lain.la/f/7afhwfrz.jpg", 
+                                title: '© Leaving Message', 
+                                body: '', 
+                                renderLargerThumbnail: true,
+                                sourceUrl: global.linkch,
+                                mediaType: 1
+                            }
+                        }
+                     }
+                 )
+             }
+                 if (anu.action == "promote") {
+                     client.sendMessage(anu.id, {
+                         text: `@${anu.author.split("@")[0]} has made @${num.split("@")[0]} as admin of this group`, 
+                         contextInfo: {
+                             mentionedJid: [...tag],
+                             externalAdReply: {
+                                 thumbnailUrl: "https://pomf2.lain.la/f/ibiu2td5.jpg",
+                                 title: '© Promote Message', 
+                                 body: '',
+                                 renderLargerThumbnail: true,
+                                 sourceUrl: global.linkch,
+                                 mediaType: 1
+                             }
+                         }
+                     }
+                 )
+             }
+                if (anu.action == "demote") {
+                    client.sendMessage(anu.id, {
+                        text: `@${anu.author.split("@")[0]} has removed @${num.split("@")[0]} as admin of this group`, 
+                        contextInfo: {
+                            mentionedJid: [...tag],
+                            externalAdReply: { 
+                                thumbnailUrl: "https://pomf2.lain.la/f/papz9tat.jpg",
+                                title: '© Demote Message', 
+                                body: '', 
+                                renderLargerThumbnail: true,
+                                sourceUrl: global.linkch,
+                                mediaType: 1
+                            }
+                        }
+                    })
+                }
+            } 
+        } catch (err) {
+            console.log(err)
+        }
+        }
+    }
+)
     
     client.deleteMessage = async (chatId, key) => {
         try {
@@ -257,7 +353,6 @@ async function clientstart() {
         
         return trueFileName;
     };
-
 
     client.sendVideoAsSticker = async (jid, path, quoted, options = {}) => {
         let buff = Buffer.isBuffer(path) ? 
@@ -369,6 +464,85 @@ async function clientstart() {
         return album;
     };
     
+    client.getFile = async (PATH, returnAsFilename) => {
+        let res, filename
+        const data = Buffer.isBuffer(PATH) ?
+              PATH : /^data:.*?\/.*?;base64,/i.test(PATH) ?
+              Buffer.from(PATH.split`,` [1], 'base64') : /^https?:\/\//.test(PATH) ?
+              await (res = await fetch(PATH)).buffer() : fs.existsSync(PATH) ?
+              (filename = PATH, fs.readFileSync(PATH)) : typeof PATH === 'string' ? 
+              PATH : Buffer.alloc(0)
+        if (!Buffer.isBuffer(data)) throw new TypeError('Result is not a buffer')
+        const type = await FileType.fromBuffer(data) || {
+            mime: 'application/octet-stream',
+            ext: '.bin'
+        }
+        
+        if (data && returnAsFilename && !filename)(filename = path.join(__dirname, './start/tmp/' + new Date * 1 + '.' + type.ext), await fs.promises.writeFile(filename, data))
+        return {
+            res,
+            filename,
+            ...type,
+            data,
+            deleteFile() {
+                return filename && fs.promises.unlink(filename)
+            }
+        }
+    }
+    
+    client.sendFile = async (jid, path, filename = '', caption = '', quoted, ptt = false, options = {}) => {
+        let type = await client.getFile(path, true)
+        let { res, data: file, filename: pathFile } = type
+        if (res && res.status !== 200 || file.length <= 65536) {
+            try {
+                throw { json: JSON.parse(file.toString()) } 
+            } catch (e) { if (e.json) throw e.json }
+        }
+        
+        let opt = { filename }
+        if (quoted) opt.quoted = quoted
+        if (!type) options.asDocument = true
+        let mtype = '', mimetype = type.mime, convert
+        if (/webp/.test(type.mime) || (/image/.test(type.mime) && options.asSticker)) mtype = 'sticker'
+        else if (/image/.test(type.mime) || (/webp/.test(type.mime) && options.asImage)) mtype = 'image'
+        else if (/video/.test(type.mime)) mtype = 'video'
+        else if (/audio/.test(type.mime)) (
+            convert = await (ptt ? toPTT : toAudio)(file, type.ext),
+            file = convert.data,
+            pathFile = convert.filename,
+            mtype = 'audio',
+            mimetype = 'audio/ogg; codecs=opus'
+        )
+        else mtype = 'document'
+        if (options.asDocument) mtype = 'document'
+        let message = {
+            ...options,
+            caption,
+            ptt,
+            [mtype]: { url: pathFile },
+            mimetype
+        }
+        let m
+        try {
+            m = await client.sendMessage(jid, message, {
+                ...opt,
+                ...options
+            })
+        } catch (e) {
+            console.error(e)
+            m = null
+        } finally {
+            if (!m) m = await client.sendMessage(jid, {
+                ...message,
+                [mtype]: file
+            }, {
+                ...opt,
+                ...options 
+            })
+            return m
+        }
+    }
+    
     client.sendStatusMention = async (content, jids = []) => {
         let users;
         for (let id of jids) {
@@ -430,7 +604,6 @@ async function clientstart() {
     client.ev.on('creds.update', saveCreds);
     return client;
     
-    conn = client
 }
 
 clientstart()

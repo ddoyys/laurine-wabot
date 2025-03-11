@@ -87,7 +87,6 @@ module.exports = client = async (client, m, chatUpdate, store) => {
             formatSize
            } = require('./lib/myfunction');
         
-        const uploadImage = require('./lib/uploadImage');
         const { remini } = require('./lib/function/remini');
         
         let cihuy = fs.readFileSync('./start/lib/media/rimuru.png')

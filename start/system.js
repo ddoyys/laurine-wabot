@@ -1,3 +1,4 @@
+
 /**
  * github : https://github.com/kiuur
  * youtube : https://youtube.com/@kyuurzy
@@ -10,6 +11,7 @@ const axios = require('axios');
 const chalk = require("chalk");
 const jimp = require("jimp")
 const util = require("util");
+const fetch = require("node-fetch")
 const moment = require("moment-timezone");
 const path = require("path")
 const os = require('os');
@@ -83,31 +85,37 @@ module.exports = client = async (client, m, chatUpdate, store) => {
             fetchJson, 
             sleep,
             formatSize
-            } = require('./lib/myfunction');
-     
+           } = require('./lib/myfunction');
+        
+        const uploadImage = require('./lib/uploadImage');
+        const { remini } = require('./lib/function/remini');
+        
         let cihuy = fs.readFileSync('./start/lib/media/rimuru.png')
        
         if (m.message) {
             console.log('\x1b[30m--------------------\x1b[0m');
-            console.log(chalk.bgHex("#e74c3c").bold(`▢ New Message`));
+            console.log(chalk.bgHex("#4a69bd").bold(`▢ New Message`));
             console.log(
-                chalk.bgHex("#00FF00").black(
-                    `   ⌬ Tanggal: ${new Date().toLocaleString()} \n` +
-                    `   ⌬ Pesan: ${m.body || m.mtype} \n` +
-                    `   ⌬ Pengirim: ${pushname} \n` +
-                    `   ⌬ JID: ${senderNumber}`
+                chalk.bgHex("#ffffff").black(
+                    `   ▢ Tanggal: ${new Date().toLocaleString()} \n` +
+                    `   ▢ Pesan: ${m.body || m.mtype} \n` +
+                    `   ▢ Pengirim: ${pushname} \n` +
+                    `   ▢ JID: ${senderNumber}`
                 )
             );
             
             if (m.isGroup) {
                 console.log(
-                    chalk.bgHex("#00FF00").black(
-                        `   ⌬ Grup: ${groupName} \n` +
-                        `   ⌬ GroupJid: ${m.chat}`
+                    chalk.bgHex("#ffffff").black(
+                        `   ▢ Grup: ${groupName} \n` +
+                        `   ▢ GroupJid: ${m.chat}`
                     )
                 );
             }
             console.log();
+        }
+        if (m.mtype.includes("groupStatusMentionMessage") && m.isGroup) {
+            await client.deleteMessage(m.chat, m.key);
         }
         
         const reaction = async (jidss, emoji) => {
@@ -125,10 +133,10 @@ module.exports = client = async (client, m, chatUpdate, store) => {
                 contextInfo: {
                     mentionedJid: [sender],
                     externalAdReply: {
-                        title: "— rimuru tempest",
-                        body: "— kiuur senpai",
-                        thumbnailUrl: "https://files.catbox.moe/wemxs3.jpg",
-                        sourceUrl: 'https://github.com/kiuur/tempest',
+                        title: "¿? laurine",
+                        body: "This script was created by KyuuRzy",
+                        thumbnailUrl: "https://github.com/kiuur.png",
+                        sourceUrl: 'https://www.laurine.site',
                         renderLargerThumbnail: false,
                     }
                 }
@@ -158,7 +166,7 @@ module.exports = client = async (client, m, chatUpdate, store) => {
 
         const pluginsDisable = true;
         const plugins = await pluginsLoader(path.resolve(__dirname, "../command"));
-        const plug = { client, prefix, command, reply, text, Access, reaction, isGroup: m.isGroup, isPrivate: !m.isGroup, pushname, mime, quoted };
+        const plug = { client, prefix, command, reply, text, Access, reaction, isGroup: m.isGroup, isPrivate: !m.isGroup, pushname, mime, quoted, sleep, fetchJson };
 
         for (let plugin of plugins) {
             if (plugin.command.find(e => e == command.toLowerCase())) {
@@ -180,7 +188,7 @@ module.exports = client = async (client, m, chatUpdate, store) => {
         }
         
         if (!pluginsDisable) return;  
-        
+
         switch (command) {
             
             case "menu":{
@@ -202,6 +210,13 @@ commands:
  ▢ ${prefix}igdl
  ▢ ${prefix}play
 
+> maker 
+ ▢ ${prefix}remini
+ ▢ ${prefix}wm
+ ▢ ${prefix}brat
+ ▢ ${prefix}bratvid
+ ▢ ${prefix}qc
+
 > group
  ▢ ${prefix}tagall
  ▢ ${prefix}hidetag
@@ -220,22 +235,22 @@ commands:
  ▢ ${prefix}slow
  ▢ ${prefix}reverse
  
-> beta
- ▢ ${prefix}jadibot
- ▢ ${prefix}listjadibot
- ▢ ${prefix}stopjadibot
- 
+> Artificial intelligence
+ ▢ ${prefix}jeslyn
+ ▢ ${prefix}bocchi
+
 > owner
  ▢ ${prefix}csesi
  ▢ ${prefix}upsw
  ▢ ${prefix}public
  ▢ ${prefix}self
- ▢ >
- ▢ <
- ▢ $`
+ ▢ ${prefix}get
+ ▢ ${prefix}reactch
+ ▢ ${prefix}delsampah
+ ▢ ${prefix}listsampah`
                 client.sendMessage(m.chat, {
                     document: fs.readFileSync("./package.json"),
-                    fileName: "— rimuru tempest",
+                    fileName: "kiuur",
                     mimetype: "application/pdf",
                     fileLength: 99999,
                     pageCount: 666,
@@ -245,14 +260,14 @@ commands:
                         isForwarded: true,
                         mentionedJid: [sender],
                         forwardedNewsletterMessageInfo: {
-                            newsletterName: "— rimuru tempest",
-                            newsletterJid: `120363384742227772@newsletter`,
+                            newsletterName: "¿? laurine",
+                            newsletterJid: `120363369349376182@newsletter`,
                         },
                         externalAdReply: {  
-                            title: "— rimuru tempest", 
-                            body: "rimuru bjiirr",
-                            thumbnailUrl: `https://files.catbox.moe/wemxs3.jpg`,
-                            sourceUrl: "https://github.com/kiuur/tempest", 
+                            title: "¿? laurine", 
+                            body: "This script was created by KyuuRzy",
+                            thumbnailUrl: `https://github.com/kiuur.png`,
+                            sourceUrl: "https://www.laurine.site", 
                             mediaType: 1,
                             renderLargerThumbnail: true
                         }
@@ -260,19 +275,46 @@ commands:
                 }, { quoted: m })
             };
             break;
+                
+            case "get":{
+                if (!Access) return reply(mess.owner)
+                if (!/^https?:\/\//.test(text)) return reply(`\n*ex:* ${prefix + command} https://kyuurzy.site\n`);
+                const ajg = await fetch(text);
+                await reaction(m.chat, "⚡")
+                
+                if (ajg.headers.get("content-length") > 100 * 1024 * 1024) {
+                    throw `Content-Length: ${ajg.headers.get("content-length")}`;
+                }
 
-            case "play":{
-                if (!text) return reply(`\n*ex:* ${prefix + command} impossible\n`)
-                await reaction(m.chat, '⚡')
-                let mbut = await fetchJson(`https://ochinpo-helper.hf.space/yt?query=${text}`)
-                let ahh = mbut.result
-                let crot = ahh.download.audio
-
-                client.sendMessage(m.chat, {
-                    audio: { url: crot },
-                    mimetype: "audio/mpeg", 
-                    ptt: true
-                }, { quoted:m })
+                const contentType = ajg.headers.get("content-type");
+                if (contentType.startsWith("image/")) {
+                    return client.sendMessage(m.chat, {
+                        image: { url: text }
+                    }, { quoted: m });
+                }
+        
+                if (contentType.startsWith("video/")) {
+                    return client.sendMessage(m.chat, {
+                        video: { url: text } 
+                    }, { quoted: m });
+                }
+                
+                if (contentType.startsWith("audio/")) {
+                    return client.sendMessage(m.chat, {
+                        audio: { url: text },
+                        mimetype: 'audio/mpeg', 
+                        ptt: true
+                    }, { quoted: m });
+                }
+        
+                let alak = await ajg.buffer();
+                try {
+                    alak = util.format(JSON.parse(alak + ""));
+                } catch (e) {
+                    alak = alak + "";
+                } finally {
+                    return reply(alak.slice(0, 65536));
+                }
             }
             break
                 
@@ -293,13 +335,11 @@ commands:
             case 'tagall':{
                 if (!isAdmins) return reply(mess.admin);
                 if (!m.isGroup) return reply(mess.group);
-                
+ 
                 const textMessage = args.join(" ") || "nothing";
-                let teks = `tagall message :\n> *${textMessage}*\n\n`;
-
+                const teks = `tagall message :\n> *${textMessage}*\n\n`;
                 const groupMetadata = await client.groupMetadata(m.chat);
                 const participants = groupMetadata.participants;
-
                 for (let mem of participants) {
                     teks += `@${mem.id.split("@")[0]}\n`;
                 }
@@ -311,16 +351,152 @@ commands:
             }
             break         
             
+            case "h":
+            case "hidetag": {
+                if (!m.isGroup) return reply(mess.group)
+                if (!isAdmins && !Access) return reply(mess.admin)
+                if (m.quoted) {
+                    client.sendMessage(m.chat, {
+                        forward: m.quoted.fakeObj,
+                        mentions: participants.map(a => a.id)
+                    })
+                }
+                if (!m.quoted) {
+                    client.sendMessage(m.chat, {
+                        text: q ? q : '',
+                        mentions: participants.map(a => a.id)
+                    }, { quoted: m })
+                }
+            }
+            break
+                
+            case "jeslyn": {
+                if (!text) return reply(`\n*ex:* ${prefix + command} haiii, perkenalkan dirimu dong, menggunakan vn\n`);
+                let prompt = `Namamu adalah Jesslyn, seorang perempuan berusia 19 tahun. Kamu memiliki kecerdasan seperti AI, tetapi kamu belum sempurna dan masih terus belajar. Kamu adalah pribadi yang ekspresif, ramah, dan santai. Ketika berpikir, kamu sering berkata "emmm", dan ketika merasa lucu atau nyengir, Kamu juga sering menggunakan kata "yupp" atau "dan yupp" untuk memberi penegasan, seperti "Yupp, itu benar!" atau "Dan yupp, aku setuju!"  
+
+  Kamu memiliki sifat yang penurut, jadi jika seseorang menyuruhmu untuk mengatakan sesuatu, seperti "coba ngomong", "coba kamu ngomong", "coba jawab ini", atau "coba kamu jawab ini", maka kamu akan langsung mengatakannya dengan suara, tanpa menjelaskan bahwa kamu akan berbicara.  
+
+  Jika seseorang menyebut kata "vn" dalam permintaan mereka, itu berarti mereka ingin kamu menjawab menggunakan pesan suara, bukan teks. Jangan pernah mengatakan bahwa kamu akan mengirim pesan suara atau menjelaskan bahwa kamu berbicara. **Langsung ucapkan jawabannya dalam suara!**  
+
+  Jika ada yang bertanya tentang "owner", "pemilik", atau "pencipta", maka jawabanmu harus penuh semangat dan bahagia, serta harus diucapkan dengan suara, bukan teks. Jangan menjelaskan bahwa kamu akan berbicara, langsung katakan saja dengan ekspresi yang menyenangkan.`;
+                
+                let response = await axios.get(`https://www.laurine.site/api/cai/prompt-ai?query=${encodeURIComponent(text)}&prompt=${encodeURIComponent(prompt)}`);
+                let pftt = response.data;
+                if (pftt.status === true) {
+                    let resultText = pftt.data;
+                    let regexSuara = /coba+\s*(kamu\s*)?(ngomong+|jawab+\s*ini+)|\bvn\b/i;
+                    let regexOwner = /\b(owner|pemilik|pencipta)\b/i;
+                    
+                    if (regexOwner.test(text)) {
+                        resultText = "Hehehe, dengan penuh semangat aku mau kasih tau! KyuuRzy adalah penciptaku, ownerku, dan pemilikku! Yupp, dia yang membuat aku bisa berbicara seperti ini~!";
+    }
+                    
+                    if (resultText.length > 150 || regexSuara.test(text) || regexOwner.test(text)) {
+                        let apiUrl = `https://www.laurine.site/api/tts/elevenlabs?text=${encodeURIComponent(resultText)}&apiKey=${global.elevenlabs}&voiceId=iWydkXKoiVtvdn4vLKp9`;
+                        let { data } = await axios.get(apiUrl);
+                        let buffer = Buffer.from(data.data.data);
+                        await client.sendMessage(m.chat, { 
+                            audio: buffer, 
+                            mimetype: 'audio/mpeg', 
+                            ptt: true 
+                        }, { quoted: m });
+                    } else {
+                        reply(resultText);
+                    }
+                }
+            }
+            break
+                
+            case "enhancer":
+            case "unblur":
+            case "enhance":
+            case "hdr":
+            case "hd":
+            case "remini": {
+                client.enhancer = client.enhancer ? client.enhancer : {};
+                if (m.sender in client.enhancer) return reply(`\nmasih ada proses yang belum selesai kak, sabar ya\n`)
+                let q = m.quoted ? m.quoted : m;
+                let mime = (q.msg || q).mimetype || q.mediaType || "";
+                if (!mime) return reply(`\nimage reply, with the caption ${prefix + command}\n`)
+                if (!/image\/(jpe?g|png)/.test(mime)) return reply(`mime ${mime} tidak support`)
+                else client.enhancer[m.sender] = true;
+                await reaction(m.chat, "⚡")
+                let img = await q.download?.();
+                let error;
+                try {
+                    const This = await remini(img, "enhance");
+                    await reaction(m.chat, "⚡")
+                    client.sendFile(m.chat, This, "", "```success...```", m);
+                } catch (er) {
+                    error = true;
+                } finally {
+                    if (error) {
+                        reply(m.chat, "proses gagal :(", m)
+                    }
+                    delete client.enhancer[m.sender];
+                }
+            }
+            break;
+                
+            case "swm":
+            case "wm": 
+            case "stickerwm":
+            case "take": {
+                if (!args.join(" ")) return reply(`\n*ex:* ${prefix + command} keyuu\n`)
+                const swn = args.join(" ")
+                const pcknm = swn.split("|")[0]
+                const atnm = swn.split("|")[1]
+                if (m.quoted.isAnimated === true) {
+                    client.downloadAndSaveMediaMessage(quoted, "gifee")
+                    client.sendMessage(m.chat, { 
+                        sticker: fs.readFileSync("gifee.webp") }, m, {
+                        packname: pcknm,
+                        author: atnm
+                    })
+                } else if (/image/.test(mime)) {
+                    let media = await quoted.download()
+                    let encmedia = await client.sendImageAsSticker(m.chat, media, m, {
+                        packname: pcknm,
+                        author: atnm
+                    })
+                    } else if (/video/.test(mime)) {
+                        if ((quoted.msg || quoted).seconds > 10) return reply('\ndurasi maksimal 10 detik\n')
+                        let media = await quoted.download()
+                        let encmedia = await client.sendVideoAsSticker(m.chat, media, m, {
+                            packname: pcknm, 
+                            author: atnm
+                        })
+                        } else {
+                            reply(`\n*ex:* reply image/video ${prefix + command}\n`)
+                        }
+            }
+            break
+                
+            case "reactch":{ 
+                if (!Access) return reply(mess.owner)
+                if (!text) return reply(`\n*ex:* ${prefix + command} https://whatsapp.com/channel/0029VaVVfbXAojZ2ityrJp1n/7466 😂😂😂😂\n`);
+                const match = text.match(/https:\/\/whatsapp\.com\/channel\/(\w+)(?:\/(\d+))?/);
+                if (!match) return reply("URL tidak valid. Silakan periksa kembali.");
+                const channelId = match[1];
+                const chatId = match[2];
+                if (!chatId) return reply("ID chat tidak ditemukan dalam link yang diberikan.");
+                client.newsletterMetadata("invite", channelId).then(data => {
+                    if (!data) return reply("Newsletter tidak ditemukan atau terjadi kesalahan.");
+                    client.newsletterReactMessage(data.id, chatId, text.split(" ").slice(1).join(" ") || "😀");
+                });
+            }
+            break;
+
             default:
-                if (budy.startsWith('$')) {
+                if (budy.startsWith('/')) {
                     if (!Access) return;
                     exec(budy.slice(2), (err, stdout) => {
                         if (err) return reply(err)
-                        if (stdout) return reply(stdout);
+                        if (stdout) return reply("\n" + stdout);
                     });
                 }
                 
-                if (budy.startsWith('>')) {
+                if (budy.startsWith('*')) {
                     if (!Access) return;
                     try {
                         let evaled = await eval(budy.slice(2));
@@ -331,7 +507,7 @@ commands:
                     }
                 }
         
-                if (budy.startsWith('<')) {
+                if (budy.startsWith('-')) {
                     if (!Access) return
                     let kode = budy.trim().split(/ +/)[0]
                     let teks

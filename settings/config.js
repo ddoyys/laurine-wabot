@@ -1,7 +1,10 @@
 const fs = require('fs')
 
-global.owner = "62"
+global.owner = "6281351692548"
+global.linkch = "https://whatsapp.com/channel/0029Vask3D80rGiHtQYeeo27"
+
 global.status = true
+global.welcome = true
 
 global.mess = {
     owner: "no, this is for owners only",
@@ -9,10 +12,10 @@ global.mess = {
     private: "this is specifically for private chat"
 }
 
-global.packname = '— rimuru tempest'
-global.author = '\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n'
-
-global.pairing = "TEMPESTT"
+global.packname = '¿? laurine'
+global.author = 'https://www.kyuurzy.tech'
+global.pairing = "PELERRRR"
+global.elevenlabs = "GET APIKEY elevenlabs.io"
 
 let file = require.resolve(__filename)
 require('fs').watchFile(file, () => {

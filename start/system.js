@@ -472,7 +472,7 @@ commands:
             }
             break
                 
-            case "reactch":{ 
+            case "reactch": { 
                 if (!Access) return reply(mess.owner)
                 if (!text) return reply(`\n*ex:* ${prefix + command} https://whatsapp.com/channel/0029VaVVfbXAojZ2ityrJp1n/7466 😂😂😂😂\n`);
                 const match = text.match(/https:\/\/whatsapp\.com\/channel\/(\w+)(?:\/(\d+))?/);

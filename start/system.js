@@ -114,6 +114,8 @@ module.exports = client = async (client, m, chatUpdate, store) => {
             }
             console.log();
         }
+
+        //menghapus statusMention di Group
         if (m.mtype.includes("groupStatusMentionMessage") && m.isGroup) {
             await client.deleteMessage(m.chat, m.key);
         }

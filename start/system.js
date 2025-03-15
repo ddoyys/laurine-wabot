@@ -88,9 +88,10 @@ module.exports = client = async (client, m, chatUpdate, store) => {
            } = require('./lib/myfunction');
         
         const { remini } = require('./lib/function/remini');
+                
+        const cihuy = fs.readFileSync('./start/lib/media/orderM.png')
+        const { fquoted } = require('./lib/fquoted')
         
-        let cihuy = fs.readFileSync('./start/lib/media/rimuru.png')
-       
         if (m.message) {
             console.log('\x1b[30m--------------------\x1b[0m');
             console.log(chalk.bgHex("#4a69bd").bold(`▢ New Message`));

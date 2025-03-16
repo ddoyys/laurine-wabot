@@ -42,7 +42,6 @@ const readline = require("readline");
 const fs = require('fs');
 const crypto = require("crypto")
 const path = require("path")
-const PORT = 3000; 
 
 const {
     spawn, 
@@ -606,14 +605,6 @@ async function clientstart() {
 }
 
 clientstart()
-
-const express = require("express");
-const next = require("next");
-const app = next({ dev: false });
-
-app.listen(PORT, () => {
-    console.log(`Server berjalan di port ${PORT}`);
-});
 
 let file = require.resolve(__filename)
 require('fs').watchFile(file, () => {

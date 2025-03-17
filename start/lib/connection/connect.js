@@ -3,8 +3,7 @@ const konek = async ({
     update,
     clientstart,
     DisconnectReason,
-    Boom,
-    chalk
+    Boom
 }) => {
     const { connection, lastDisconnect } = update;
 

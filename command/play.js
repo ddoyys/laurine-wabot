@@ -22,7 +22,7 @@ let handler = async (m, { client, text, reply, quoted, reaction, prefix, command
         audio: { url: ahh },
         mimetype: "audio/mpeg", 
         ptt: true
-    }, { quoted:m })
+    }, { quoted: m })
 }
 
 handler.help = ['downloader music']

@@ -1,3 +1,11 @@
+
+/*─────────────────────────────────────────
+  GitHub   : https://github.com/kiuur    
+  YouTube  : https://youtube.com/@kyuurzy
+  Rest API : https://laurine.site        
+  Telegram : https://kyuucode.t.me       
+──────────────────────────────────────────*/
+
 let handler = async (m, { client, text, reply }) => {
     const quoted = m.quoted ? m.quoted : null;
 

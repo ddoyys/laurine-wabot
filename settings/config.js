@@ -1,3 +1,11 @@
+
+/**
+ * GitHub   : https://github.com/kiuur
+ * YouTube  : https://youtube.com/@kyuurzy
+ * Rest API : https://laurine.site
+ * Telegram : https://kyuucode.t.me
+ */
+
 const fs = require('fs')
 
 global.owner = "6281351692548"

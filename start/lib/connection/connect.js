@@ -1,3 +1,11 @@
+
+/**
+ * GitHub   : https://github.com/kiuur
+ * YouTube  : https://youtube.com/@kyuurzy
+ * Rest API : https://laurine.site
+ * Telegram : https://kyuucode.t.me
+ */
+
 const konek = async ({
     client,
     update,

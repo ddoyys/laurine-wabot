@@ -1,9 +1,10 @@
-/**
- * Base By Siputzx
- * Created On 22/2/2024
- * Contact Me on wa.me/6288292024190
- * Supported By Gpt Assistant 
-*/
+
+/*─────────────────────────────────────────
+  GitHub   : https://github.com/kiuur    
+  YouTube  : https://youtube.com/@kyuurzy
+  Rest API : https://laurine.site        
+  Telegram : https://kyuucode.t.me       
+──────────────────────────────────────────*/
 
 const fs = require('fs')
 const { tmpdir } = require("os")

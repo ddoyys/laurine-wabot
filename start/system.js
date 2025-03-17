@@ -1,8 +1,10 @@
 
 /**
- * github : https://github.com/kiuur
- * youtube : https://youtube.com/@kyuurzy
-*/
+ * GitHub   : https://github.com/kiuur
+ * YouTube  : https://youtube.com/@kyuurzy
+ * Rest API : https://laurine.site
+ * Telegram : https://kyuucode.t.me
+ */
 
 require('../settings/config');
 

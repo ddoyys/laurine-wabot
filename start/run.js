@@ -1,9 +1,11 @@
+
 /**
- * github: https://github.com/kiuur
- * youtube: https://youtube.com/@kyuurzy
- * note: disini ada error dikit di bagian connection.update, kalian aja yang fix, aku nanti jelaa
-*/
-  
+ * GitHub   : https://github.com/kiuur
+ * YouTube  : https://youtube.com/@kyuurzy
+ * Rest API : https://laurine.site
+ * Telegram : https://kyuucode.t.me
+ */
+
 console.clear();
 console.log('starting...');
 require('../settings/config');

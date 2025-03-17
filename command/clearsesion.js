@@ -1,12 +1,18 @@
+
+/*─────────────────────────────────────────
+  GitHub   : https://github.com/kiuur    
+  YouTube  : https://youtube.com/@kyuurzy
+  Rest API : https://laurine.site        
+  Telegram : https://kyuucode.t.me       
+──────────────────────────────────────────*/
+
 const { 
   readdirSync,
   statSync,
-  unlinkSync 
+  unlinkSync
 } = require('fs');
 
-const {
-  join 
-} = require('path');
+const { join } = require('path');
 
 let handler = async (m, { reply, args }) => {
   const sesi = ['./session'];

@@ -1,3 +1,11 @@
+
+/*─────────────────────────────────────────
+  GitHub   : https://github.com/kiuur    
+  YouTube  : https://youtube.com/@kyuurzy
+  Rest API : https://laurine.site        
+  Telegram : https://kyuucode.t.me       
+──────────────────────────────────────────*/
+
 const chalk = require('chalk')
 
 const color = (text, color) => {

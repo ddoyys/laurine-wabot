@@ -24,7 +24,7 @@ global.packname = '¿? laurine'
 global.author = 'https://www.kyuurzy.tech'
 global.pairing = "PELERRRR"
 
-global.APIVOICE = "GET APIKEY api.elevenlabs.io"
+global.KEY = "GET APIKEY api.elevenlabs.io"
 global.IDVOICE = "GET ON api.elevenlabs.io"
 
 let file = require.resolve(__filename)

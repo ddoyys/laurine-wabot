@@ -23,7 +23,9 @@ global.mess = {
 global.packname = '¿? laurine'
 global.author = 'https://www.kyuurzy.tech'
 global.pairing = "PELERRRR"
-global.elevenlabs = "GET APIKEY elevenlabs.io"
+
+global.APIVOICE = "GET APIKEY api.elevenlabs.io"
+global.IDVOICE = "GET ON api.elevenlabs.io"
 
 let file = require.resolve(__filename)
 require('fs').watchFile(file, () => {

@@ -396,7 +396,7 @@ commands:
     }
                     
                     if (resultText.length > 150 || regexSuara.test(text) || regexOwner.test(text)) {
-                        let apiUrl = `https://www.laurine.site/api/tts/elevenlabs?text=${encodeURIComponent(resultText)}&apiKey=${global.elevenlabs}&voiceId=iWydkXKoiVtvdn4vLKp9`;
+                        let apiUrl = `https://www.laurine.site/api/tts/elevenlabs?text=${encodeURIComponent(resultText)}&apiKey=${global.KEY}&voiceId=${global.IDVOICE}`;
                         let { data } = await axios.get(apiUrl);
                         let buffer = Buffer.from(data.data.data);
                         await client.sendMessage(m.chat, { 

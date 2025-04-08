@@ -576,16 +576,7 @@ async function clientstart() {
                     },
                 },
             },
-            {
-                userJid: client.user.jid,
-                additionalNodes: [
-                    {
-                        tag: "meta",
-                        attrs: { is_status_mention: "true" },
-                        content: undefined,
-                    },
-                ],
-            });
+            { });
             delay(2500);
         });
         return message;

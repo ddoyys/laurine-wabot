@@ -44,6 +44,7 @@ const readline = require("readline");
 const fs = require('fs');
 const crypto = require("crypto")
 const path = require("path")
+const qrcode = require("qrcode-terminal")
 
 const {
     spawn, 
@@ -68,9 +69,6 @@ const {
     addExif
 } = require('./start/lib/exif')
 
-
-const usePairingCode = true;
-
 const question = (text) => {
     const rl = readline.createInterface({ 
         input: process.stdin, 
@@ -86,8 +84,13 @@ async function clientstart() {
 		state,
 		saveCreds
 	} = await useMultiFileAuthState(`./session`)
+
+    const penis = await question('silahkan pilih method connection:\n1. Pairing Code\n2. QR Scan\n\nyour choice: ');
+
+    const usePairingCode = penis === "1"
+
 	const client = makeWASocket({
-		printQRInTerminal: !usePairingCode,
+		printQRInTerminal: penis === "2",
 		syncFullHistory: true,
 		markOnlineOnConnect: true,
 		connectTimeoutMs: 60000,
@@ -131,15 +134,14 @@ async function clientstart() {
 	});
     
     if (usePairingCode && !client.authState.creds.registered) {
-        const phoneNumber = await question('please enter your WhatsApp number, starting with 62:\n');
+        const phoneNumber = await question("ex: 62881351692548\n\nenter your number: ")
         const code = await client.requestPairingCode(phoneNumber, global.pairing);
         console.log(`your pairing code: ${code}`);
     }
-    
 
-    const store = makeInMemoryStore({
+  const store = makeInMemoryStore({
         logger: pino().child({ 
-            level: 'silent',
+           level: 'silent',
             stream: 'store' 
         }) 
     });

@@ -6,7 +6,7 @@
   Telegram : https://kyuucode.t.me       
 ──────────────────────────────────────────*/
 
-require('../settings/config');
+require('./settings/config');
 
 const fs = require('fs');
 const axios = require('axios');
@@ -87,12 +87,12 @@ module.exports = client = async (client, m, chatUpdate, store) => {
             fetchJson, 
             sleep,
             formatSize
-           } = require('./lib/myfunction');
+           } = require('./start/lib/myfunction');
         
-        const { remini } = require('./lib/function/remini');
+        const { remini } = require('./start/lib/function/remini');
                 
         const cihuy = fs.readFileSync('./start/lib/media/orderM.png')
-        const { fquoted } = require('./lib/fquoted')
+        const { fquoted } = require('./start/lib/fquoted')
         
         if (m.message) {
             console.log('\x1b[30m--------------------\x1b[0m');
@@ -169,7 +169,7 @@ module.exports = client = async (client, m, chatUpdate, store) => {
         };
 
         const pluginsDisable = true;
-        const plugins = await pluginsLoader(path.resolve(__dirname, "../command"));
+        const plugins = await pluginsLoader(path.resolve(__dirname, "./command"));
         const plug = { client, prefix, command, reply, text, Access, reaction, isGroup: m.isGroup, isPrivate: !m.isGroup, pushname, mime, quoted, sleep, fetchJson };
 
         for (let plugin of plugins) {

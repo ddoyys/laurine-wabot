@@ -8,7 +8,7 @@
 
 console.clear();
 console.log('starting...');
-require('../settings/config');
+require('./settings/config');
 process.on("uncaughtException", console.error);
 
 const { 
@@ -52,13 +52,13 @@ const {
    } = require('child_process');
 
 const { Boom } = require('@hapi/boom');
-const { color } = require('./lib/color');
+const { color } = require('./start/lib/color');
 
 const {
     smsg,
     sleep,
     getBuffer
-} = require('./lib/myfunction');
+} = require('./start/lib/myfunction');
 
 const { 
     imageToWebp,
@@ -66,7 +66,7 @@ const {
     writeExifImg,
     writeExifVid,
     addExif
-} = require('./lib/exif')
+} = require('./start/lib/exif')
 
 
 const usePairingCode = true;
@@ -156,7 +156,7 @@ async function clientstart() {
             if (mek.key.id.startsWith('BAE5') && mek.key.id.length === 16) return
             if (mek.key.id.startsWith('FatihArridho_')) return;
             const m = smsg(client, mek, store)
-            require("./system")(client, m, chatUpdate, store)
+            require("./message")(client, m, chatUpdate, store)
         } catch (err) {
             console.log(err)
         }
@@ -183,7 +183,7 @@ async function clientstart() {
     client.public = global.status
     
     client.ev.on('connection.update', (update) => {
-        const { konek } = require('./lib/connection/connect')
+        const { konek } = require('./start/lib/connection/connect')
         konek({ client, update, clientstart, DisconnectReason, Boom })
     })
     
@@ -468,7 +468,7 @@ async function clientstart() {
             ext: '.bin'
         }
         
-        if (data && returnAsFilename && !filename)(filename = path.join(__dirname, './start/tmp/' + new Date * 1 + '.' + type.ext), await fs.promises.writeFile(filename, data))
+        if (data && returnAsFilename && !filename)(filename = path.join(__dirname, './tmp/' + new Date * 1 + '.' + type.ext), await fs.promises.writeFile(filename, data))
         return {
             res,
             filename,

@@ -1,6 +1,6 @@
 # Laurine wa-bot
 
-![Project Image](https://pomf2.lain.la/f/wsbg6r1o.jpg)
+![Project Image](https://pomf2.lain.la/f/u9wt713u.png)
 
 ## Detailed Explanation of Laurine wa-bot and Its Functions
 

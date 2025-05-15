@@ -1,14 +1,11 @@
 {
-    "name": "rimuru - tempest",
+    "name": "laurine-wabot",
     "version": "1.0.0",
-    "description": "gatau ah, males",
+    "description": "gatau",
     "main": "index.js",
     "type": "commonjs",
     "scripts": {
         "start": "node index.js"
-    },
-    "engines": {
-        "node": "18.x"
     },
     "keywords": [
         "whiskeysockets",

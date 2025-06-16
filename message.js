@@ -93,7 +93,7 @@ module.exports = client = async (client, m, chatUpdate, store) => {
                         renderLargerThumbnail: false,
                     }
                 }
-            }, { quoted: fquoted.forder })
+            }, { quoted: fquoted.packSticker })
         }
         
         const pluginsLoader = async (directory) => {
@@ -201,7 +201,7 @@ command:
                             }
                         ]
                     }
-                }, { quoted: fquoted.forder });
+                }, { quoted: fquoted.packSticker });
             }
             break
             case "get":{
@@ -218,13 +218,13 @@ command:
                 if (contentType.startsWith("image/")) {
                     return client.sendMessage(m.chat, {
                         image: { url: text }
-                    }, { quoted: fquoted.forder });
+                    }, { quoted: fquoted.packSticker });
                 }
         
                 if (contentType.startsWith("video/")) {
                     return client.sendMessage(m.chat, {
                         video: { url: text } 
-                    }, { quoted: fquoted.forder });
+                    }, { quoted: fquoted.packSticker });
                 }
                 
                 if (contentType.startsWith("audio/")) {
@@ -232,7 +232,7 @@ command:
                         audio: { url: text },
                         mimetype: 'audio/mpeg', 
                         ptt: true
-                    }, { quoted: fquoted.forder });
+                    }, { quoted: fquoted.packSticker });
                 }
         
                 let alak = await ajg.buffer();
@@ -256,7 +256,7 @@ command:
                     document: Buffer.from(penis),
                     fileName: acak,
                     mimetype: "application/json"
-                }, { quoted: fquoted.forder })
+                }, { quoted: fquoted.packSticker })
             }
             break
             case 'tagall':{
@@ -272,7 +272,7 @@ command:
                 client.sendMessage(m.chat, {
                     text: teks,
                     mentions: participants.map((a) => a.id)
-                }, { quoted: fquoted.forder });
+                }, { quoted: fquoted.packSticker });
             }
             break
             case "exec": {

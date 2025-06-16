@@ -1,7 +1,7 @@
-const fs = require("fs");
+const fs = require('fs')
 
 const fquoted = {
-    forder: {
+    packSticker: {
         key: {
             fromMe: false,
             participant: "0@s.whatsapp.net",

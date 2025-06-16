@@ -1,31 +1,41 @@
-
-/*─────────────────────────────────────────
-  GitHub   : https://github.com/kiuur    
-  YouTube  : https://youtube.com/@kyuurzy
-  Rest API : https://laurine.site        
-  Telegram : https://kyuucode.t.me       
-──────────────────────────────────────────*/
-
 const fs = require('fs')
 
-global.owner = "6281351692548"
-global.linkch = "https://whatsapp.com/channel/0029Vask3D80rGiHtQYeeo27"
-
-global.status = true
-global.welcome = true
-
-global.mess = {
-    owner: "no, this is for owners only",
-    group: "this is for groups only",
-    private: "this is specifically for private chat"
+const config = {
+    owner: "6281351692548",
+    botNumber: "6281351692548",
+    setPair: "K1UU1212",
+    thumbUrl: "https://github.com/kiuur.png",
+    session: "sessions",
+    status: {
+        public: true,
+        terminal: true
+    },
+    message: {
+        owner: "no, this is for owners only",
+        group: "this is for groups only",
+        admin: "this command is for admin only",
+        private: "this is specifically for private chat"
+    },
+    settings: {
+        title: "laurine-wb",
+        packname: 'laurine-wabot',
+        description: "this script was created by KyuuRzy",
+        author: 'https://www.kyuurzy.tech',
+        footer: "kyuurzy-wb`"
+    },
+    newsletter: {
+        name: "kyuurzy-wb",
+        id: "120363301416835342@newsletter"
+    },
+    socialMedia: {
+        YouTube: "https://youtube.com/@kyuurzy",
+        GitHub: "https://github.com/kiuur",
+        Telegram: "https://t.me/kyuucode",
+        ChannelWA: "https://whatsapp.com/channel/0029VaarMc8DZ4Lc33QM3q3N"
+    }
 }
 
-global.packname = '¿? laurine'
-global.author = 'https://www.kyuurzy.tech'
-global.pairing = "PELERRRR"
-
-global.KEY = "GET APIKEY elevenlabs.io"
-global.IDVOICE = "GET ON elevenlabs.io"
+module.exports = config;
 
 let file = require.resolve(__filename)
 require('fs').watchFile(file, () => {

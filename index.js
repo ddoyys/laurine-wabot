@@ -1,14 +1,6 @@
-
-/*─────────────────────────────────────────
-  GitHub   : https://github.com/kiuur    
-  YouTube  : https://youtube.com/@kyuurzy
-  Rest API : https://laurine.site        
-  Telegram : https://kyuucode.t.me       
-──────────────────────────────────────────*/
-
 console.clear();
 console.log('starting...');
-require('./settings/config');
+const config = require('./settings/config');
 process.on("uncaughtException", console.error);
 
 const { 
@@ -44,125 +36,78 @@ const readline = require("readline");
 const fs = require('fs');
 const crypto = require("crypto")
 const path = require("path")
-const qrcode = require("qrcode-terminal")
 
-const {
-    spawn, 
-    exec,
-    execSync 
-   } = require('child_process');
-
+const { spawn, exec, execSync } = require('child_process');
 const { Boom } = require('@hapi/boom');
-const { color } = require('./start/lib/color');
-
-const {
-    smsg,
-    sleep,
-    getBuffer
-} = require('./start/lib/myfunction');
-
-const { 
-    imageToWebp,
-    videoToWebp,
-    writeExifImg,
-    writeExifVid,
-    addExif
-} = require('./start/lib/exif')
+const { color } = require('./キュルジー/lib/color');
+const { smsg, sleep, getBuffer } = require('./キュルジー/lib/myfunction');
+const { imageToWebp, videoToWebp, writeExifImg, writeExifVid, addExif } = require('./キュルジー/lib/exif')
+const listcolor = ['cyan', 'magenta', 'green', 'yellow', 'blue'];
+const randomcolor = listcolor[Math.floor(Math.random() * listcolor.length)];
 
 const question = (text) => {
-    const rl = readline.createInterface({ 
-        input: process.stdin, 
-        output: process.stdout 
+    const rl = readline.createInterface({
+        input: process.stdin,
+        output: process.stdout
     });
     return new Promise((resolve) => {
-        rl.question(text, resolve) 
+        rl.question(color(text, randomcolor), (answer) => {
+            resolve(answer);
+            rl.close();
+        });
     });
 }
 
-async function clientstart() {
-	const {
-		state,
-		saveCreds
-	} = await useMultiFileAuthState(`./session`)
-
-    const penis = await question('silahkan pilih method connection:\n1. Pairing Code\n2. QR Scan\n\nyour choice: ');
-
-    const usePairingCode = penis === "1"
-
-	const client = makeWASocket({
-		printQRInTerminal: penis === "2",
-		syncFullHistory: true,
-		markOnlineOnConnect: true,
-		connectTimeoutMs: 60000,
-		defaultQueryTimeoutMs: 0,
-		keepAliveIntervalMs: 10000,
-		generateHighQualityLinkPreview: true,
-		patchMessageBeforeSending: (message) => {
-			const requiresPatch = !!(
-				message.buttonsMessage ||
-				message.templateMessage ||
-				message.listMessage
-			);
-			if (requiresPatch) {
-				message = {
-					viewOnceMessage: {
-						message: {
-							messageContextInfo: {
-								deviceListMetadataVersion: 2,
-								deviceListMetadata: {},
-							},
-							...message,
-						},
-					},
-				};
-			}
-
-			return message;
-		},
-		version: (await (await fetch('https://raw.githubusercontent.com/WhiskeySockets/Baileys/master/src/Defaults/baileys-version.json')).json()).version,
-		browser: ["Ubuntu", "Chrome", "20.0.04"],
-		logger: pino({
-			level: 'fatal'
-		}),
-		auth: {
-			creds: state.creds,
-			keys: makeCacheableSignalKeyStore(state.keys, pino().child({
-				level: 'silent',
-				stream: 'store'
-			})),
-		}
-	});
-    
-    if (usePairingCode && !client.authState.creds.registered) {
-        const phoneNumber = await question("ex: 62881351692548\n\nenter your number: ")
-        const code = await client.requestPairingCode(phoneNumber, global.pairing);
+const clientstart = async() => {
+    const store = makeInMemoryStore({
+        logger: pino().child({ 
+            level: 'silent',
+            stream: 'store' 
+        })
+    });
+	const { state, saveCreds } = await useMultiFileAuthState(`./${config.session}`)
+    const { version, isLatest } = await fetchLatestBaileysVersion();
+    const client = makeWASocket({
+        logger: pino({ level: "silent" }),
+        printQRInTerminal: !config.status.terminal,
+        auth: state,
+        browser: ["Ubuntu", "Chrome", "20.0.00"]
+    });
+    if (config.status.terminal && !client.authState.creds.registered) {
+        const phoneNumber = await question('/> please enter your WhatsApp number, starting with 62:\n> number: ');
+        const code = await client.requestPairingCode(phoneNumber, config.setPair);
         console.log(`your pairing code: ${code}`);
     }
-
-  const store = makeInMemoryStore({
-        logger: pino().child({ 
-           level: 'silent',
-            stream: 'store' 
-        }) 
-    });
     
     store.bind(client.ev);
     
-    client.ev.on("messages.upsert", async (chatUpdate, msg) => {
+    client.ev.on('creds.update', saveCreds);
+    client.ev.on('messages.upsert', async chatUpdate => {
         try {
             const mek = chatUpdate.messages[0]
             if (!mek.message) return
-            mek.message = (Object.keys(mek.message)[0] === 'ephemeralMessage') ? mek.message.ephemeralMessage.message : mek.message
-            if (mek.key && mek.key.remoteJid === 'status@broadcast') return
+            mek.message =
+                Object.keys(mek.message)[0] === 'ephemeralMessage' ?
+                mek.message.ephemeralMessage.message : mek.message
+            if (mek.key && mek.key.remoteJid === 'status@broadcast') {
+                let emoji = [ '😘', '😭', '😂', '😹', '😍', '😋', '🙏', '😜', '😢', '😠', '🤫', '😎' ];
+                let sigma = emoji[Math.floor(Math.random() * emoji.length)];
+                await client.readMessages([mek.key]);
+                client.sendMessage('status@broadcast', { 
+                    react: { 
+                        text: sigma, 
+                        key: mek.key 
+                    }
+                }, { statusJidList: [mek.key.participant] })}
+            if (mek.key && mek.key.remoteJid.includes('@newsletter')) return;
             if (!client.public && !mek.key.fromMe && chatUpdate.type === 'notify') return
-            if (mek.key.id.startsWith('BAE5') && mek.key.id.length === 16) return
-            if (mek.key.id.startsWith('FatihArridho_')) return;
+            if (mek.key.id.startsWith('Laurine-') && mek.key.id.length === 12) return
             const m = smsg(client, mek, store)
             require("./message")(client, m, chatUpdate, store)
         } catch (err) {
             console.log(err)
         }
-    });
+    })
 
     client.decodeJid = (jid) => {
         if (!jid) return jid;
@@ -182,105 +127,12 @@ async function clientstart() {
         }
     });
 
-    client.public = global.status
+    client.public = config.status.public
     
     client.ev.on('connection.update', (update) => {
-        const { konek } = require('./start/lib/connection/connect')
+        const { konek } = require('./キュルジー/lib/connection/connect')
         konek({ client, update, clientstart, DisconnectReason, Boom })
     })
-    
-    client.ev.on('group-participants.update', async (anu) => {
-        if (global.welcome) {
-            console.log(anu)
-        let botNumber = await client.decodeJid(client.user.id)
-        if (anu.participants.includes(botNumber)) return
-        try {
-            let metadata = await client.groupMetadata(anu.id)
-            let namagc = metadata.subject
-            let participants = anu.participants
-            for (let num of participants) {
-                let check = anu.author !== num && anu.author.length > 1
-                let tag = check ? [anu.author, num] : [num]
-                try {
-                    ppuser = await client.profilePictureUrl(num, 'image')
-                } catch {
-                    ppuser = 'https://telegra.ph/file/de7c8230aff02d7bd1a93.jpg'
-                }
-                
-                if (anu.action == 'add') {
-                    client.sendMessage(anu.id, { 
-                        text: check ? `hello @${num.split("@")[0]} welcome to *${namagc}*` : `hello @${num.split("@")[0]} welcome to *${namagc}*`, 
-                        contextInfo: {
-                            mentionedJid: [...tag], 
-                            externalAdReply: { 
-                                thumbnailUrl: "https://pomf2.lain.la/f/ic51evmj.jpg", 
-                                title: '© Welcome Message', 
-                                body: '', 
-                                renderLargerThumbnail: true,
-                                sourceUrl: global.linkch,
-                                mediaType: 1
-                            }
-                        }
-                    }
-               )
-          } 
-                if (anu.action == 'remove') { 
-                    client.sendMessage(anu.id, {
-                        text: check ? `@${num.split("@")[0]} has left group *${namagc}*` : `@${num.split("@")[0]} has left group *${namagc}*`, 
-                        contextInfo: {
-                            mentionedJid: [...tag], 
-                            externalAdReply: {
-                                thumbnailUrl: "https://pomf2.lain.la/f/7afhwfrz.jpg", 
-                                title: '© Leaving Message', 
-                                body: '', 
-                                renderLargerThumbnail: true,
-                                sourceUrl: global.linkch,
-                                mediaType: 1
-                            }
-                        }
-                     }
-                 )
-             }
-                 if (anu.action == "promote") {
-                     client.sendMessage(anu.id, {
-                         text: `@${anu.author.split("@")[0]} has made @${num.split("@")[0]} as admin of this group`, 
-                         contextInfo: {
-                             mentionedJid: [...tag],
-                             externalAdReply: {
-                                 thumbnailUrl: "https://pomf2.lain.la/f/ibiu2td5.jpg",
-                                 title: '© Promote Message', 
-                                 body: '',
-                                 renderLargerThumbnail: true,
-                                 sourceUrl: global.linkch,
-                                 mediaType: 1
-                             }
-                         }
-                     }
-                 )
-             }
-                if (anu.action == "demote") {
-                    client.sendMessage(anu.id, {
-                        text: `@${anu.author.split("@")[0]} has removed @${num.split("@")[0]} as admin of this group`, 
-                        contextInfo: {
-                            mentionedJid: [...tag],
-                            externalAdReply: { 
-                                thumbnailUrl: "https://pomf2.lain.la/f/papz9tat.jpg",
-                                title: '© Demote Message', 
-                                body: '', 
-                                renderLargerThumbnail: true,
-                                sourceUrl: global.linkch,
-                                mediaType: 1
-                            }
-                        }
-                    })
-                }
-            } 
-        } catch (err) {
-            console.log(err)
-        }
-        }
-    }
-)
     
     client.deleteMessage = async (chatId, key) => {
         try {
@@ -583,18 +435,34 @@ async function clientstart() {
         });
         return message;
     };
-    
-    client.ev.on('creds.update', saveCreds);
     return client;
     
 }
 
 clientstart()
+const ignoredErrors = [
+    'Socket connection timeout',
+    'EKEYTYPE',
+    'item-not-found',
+    'rate-overlimit', 
+    'Connection Closed', 
+    'Timed Out', 
+    'Value not found'
+];
 
-let file = require.resolve(__filename)
-require('fs').watchFile(file, () => {
-  require('fs').unwatchFile(file)
-  console.log('\x1b[0;32m'+__filename+' \x1b[1;32mupdated!\x1b[0m')
-  delete require.cache[file]
-  require(file)
-})
+process.on('unhandledRejection', (reason) => {
+    if (ignoredErrors.some((e) => String(reason).includes(e))) return;
+    console.log('Unhandled Rejection: ', reason);
+});
+
+const originalConsoleError = console.error;
+console.error = function (message, ...optionalParams) {
+    if (typeof message === 'string' && ignoredErrors.some((e) => message.includes(e))) return;
+    originalConsoleError.apply(console, [message, ...optionalParams]);
+};
+
+const originalStderrWrite = process.stderr.write;
+process.stderr.write = function (message, encoding, fd) {
+    if (typeof message === 'string' && ignoredErrors.some((e) => message.includes(e))) return
+    originalStderrWrite.apply(process.stderr, arguments);
+};

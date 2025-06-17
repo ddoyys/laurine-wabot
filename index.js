@@ -1,6 +1,6 @@
 console.clear();
 console.log('starting...');
-const config = require('./settings/config');
+const config = () => require('./settings/config');
 process.on("uncaughtException", console.error);
 
 const { 
@@ -65,15 +65,15 @@ const clientstart = async() => {
             stream: 'store' 
         })
     });
-	const { state, saveCreds } = await useMultiFileAuthState(`./${config.session}`)
+	const { state, saveCreds } = await useMultiFileAuthState(`./${config().session}`)
     const { version, isLatest } = await fetchLatestBaileysVersion();
     const client = makeWASocket({
         logger: pino({ level: "silent" }),
-        printQRInTerminal: !config.status.terminal,
+        printQRInTerminal: !config().status.terminal,
         auth: state,
         browser: ["Ubuntu", "Chrome", "20.0.00"]
     });
-    if (config.status.terminal && !client.authState.creds.registered) {
+    if (config().status.terminal && !client.authState.creds.registered) {
         const phoneNumber = await question('/> please enter your WhatsApp number, starting with 62:\n> number: ');
         const code = await client.requestPairingCode(phoneNumber, config.setPair);
         console.log(`your pairing code: ${code}`);
@@ -89,7 +89,7 @@ const clientstart = async() => {
             mek.message =
                 Object.keys(mek.message)[0] === 'ephemeralMessage' ?
                 mek.message.ephemeralMessage.message : mek.message
-            if (mek.key && mek.key.remoteJid === 'status@broadcast') {
+            if (config().status.reactsw && mek.key && mek.key.remoteJid === 'status@broadcast') {
                 let emoji = [ '😘', '😭', '😂', '😹', '😍', '😋', '🙏', '😜', '😢', '😠', '🤫', '😎' ];
                 let sigma = emoji[Math.floor(Math.random() * emoji.length)];
                 await client.readMessages([mek.key]);
@@ -127,7 +127,7 @@ const clientstart = async() => {
         }
     });
 
-    client.public = config.status.public
+    client.public = config().status.public
     
     client.ev.on('connection.update', (update) => {
         const { konek } = require('./キュルジー/lib/connection/connect')
@@ -440,29 +440,36 @@ const clientstart = async() => {
 }
 
 clientstart()
+
 const ignoredErrors = [
     'Socket connection timeout',
     'EKEYTYPE',
     'item-not-found',
-    'rate-overlimit', 
-    'Connection Closed', 
-    'Timed Out', 
+    'rate-overlimit',
+    'Connection Closed',
+    'Timed Out',
     'Value not found'
-];
+]
 
-process.on('unhandledRejection', (reason) => {
-    if (ignoredErrors.some((e) => String(reason).includes(e))) return;
-    console.log('Unhandled Rejection: ', reason);
-});
+let file = require.resolve(__filename)
+require('fs').watchFile(file, () => {
+  delete require.cache[file]
+  require(file)
+})
 
-const originalConsoleError = console.error;
-console.error = function (message, ...optionalParams) {
-    if (typeof message === 'string' && ignoredErrors.some((e) => message.includes(e))) return;
-    originalConsoleError.apply(console, [message, ...optionalParams]);
-};
+process.on('unhandledRejection', reason => {
+    if (ignoredErrors.some(e => String(reason).includes(e))) return
+    console.log('Unhandled Rejection:', reason)
+})
 
-const originalStderrWrite = process.stderr.write;
-process.stderr.write = function (message, encoding, fd) {
-    if (typeof message === 'string' && ignoredErrors.some((e) => message.includes(e))) return
-    originalStderrWrite.apply(process.stderr, arguments);
-};
+const originalConsoleError = console.error
+console.error = function (msg, ...args) {
+    if (typeof msg === 'string' && ignoredErrors.some(e => msg.includes(e))) return
+    originalConsoleError.apply(console, [msg, ...args])
+}
+
+const originalStderrWrite = process.stderr.write
+process.stderr.write = function (msg, encoding, fd) {
+    if (typeof msg === 'string' && ignoredErrors.some(e => msg.includes(e))) return
+    originalStderrWrite.apply(process.stderr, arguments)
+}

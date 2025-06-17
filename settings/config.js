@@ -8,7 +8,8 @@ const config = {
     session: "sessions",
     status: {
         public: true,
-        terminal: true
+        terminal: true,
+        reactsw: false
     },
     message: {
         owner: "no, this is for owners only",

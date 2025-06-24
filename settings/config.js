@@ -1,8 +1,8 @@
 const fs = require('fs')
 
 const config = {
-    owner: "6281351692548",
-    botNumber: "6281351692548",
+    owner: "-",
+    botNumber: "-",
     setPair: "K1UU1212",
     thumbUrl: "https://github.com/kiuur.png",
     session: "sessions",

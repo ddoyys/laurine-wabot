@@ -39,7 +39,41 @@ module.exports = client = async (client, m, chatUpdate, store) => {
         const prefix = prefixRegex.test(body) ? body.match(prefixRegex)[0] : '.';
         const from = m.key.remoteJid;
         const isGroup = from.endsWith("@g.us");
-        const botNumber = await client.decodeJid(client.user.id);
+        const botNumber = await client.decodeJid(client.user.id)
+        ;const groupMetadata = m?.isGroup ? await client.groupMetadata(m.chat).catch(() => ({})) : {};
+        const groupName = m?.isGroup ? groupMetadata.subject || '' : '';
+
+        const participants = m?.isGroup
+          ? groupMetadata.participants?.map(p => {
+              let admin = null;
+              if (p.admin === 'superadmin') admin = 'superadmin';
+              else if (p.admin === 'admin') admin = 'admin';
+              return {
+                id: p.id || null,
+                jid: p.jid || null,
+                lid: p.lid || null,
+                admin,
+                full: p
+              };
+            }) || []
+          : [];
+        
+            const groupOwner = m?.isGroup
+              ? participants.find(p => p.admin === 'superadmin')?.jid || ''
+              : '';
+            
+            const groupAdmins = participants
+              .filter(p => p.admin === 'admin' || p.admin === 'superadmin')
+              .map(p => p.jid || p.id);
+
+        const isBotAdmins = m?.isGroup ? groupAdmins.includes(botNumber) : false;
+        const isAdmins = m?.isGroup ? groupAdmins.includes(m.sender) : false;
+        const isGroupOwner = m?.isGroup ? groupOwner === m.sender : false;
+        
+        const senderLid = (() => {
+          const p = participants.find(p => p.jid === m.sender);
+          return p?.lid || null;
+        })();
         const isBot = botNumber.includes(senderNumber)
         
         const isCmd = body.startsWith(prefix);
@@ -57,28 +91,42 @@ module.exports = client = async (client, m, chatUpdate, store) => {
         const cihuy = fs.readFileSync('./キュルジー/lib/media/laurine-wb.png')
         const { fquoted } = require('./キュルジー/lib/fquoted')
         
-        if (isBot) {
-            console.log('\x1b[30m--------------------\x1b[0m');
-            console.log(chalk.bgHex("#4a69bd").bold(`▢ New Message`));
-            console.log(
-                chalk.bgHex("#ffffff").black(
-                    `   ▢ Tanggal: ${new Date().toLocaleString()} \n` +
-                    `   ▢ Pesan: ${m.body || m.mtype} \n` +
-                    `   ▢ Pengirim: ${pushname} \n` +
-                    `   ▢ JID: ${senderNumber}`
-                )
-            );
-            console.log();
-        }
-        
-        const reaction = async (jidss, emoji) => {
-            client.sendMessage(jidss, {
-                react: {
-                    text: emoji,
-                    key: m.key 
-                } 
-            })
-        };
+        if (m.message) {
+    
+    console.log(chalk.hex("#555")("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"));
+
+    console.log(chalk.bgRedBright.white.bold(" 🔔 New Message Received! "));
+
+    const msgType = m.mtype || 'text';
+    let typeColor = "#f39c12"; // Default: orange
+    if (msgType.includes("image")) typeColor = "#3498db";     // biru
+    else if (msgType.includes("video")) typeColor = "#9b59b6"; // ungu
+    else if (msgType.includes("audio")) typeColor = "#1abc9c"; // cyan
+    else if (msgType.includes("sticker")) typeColor = "#2ecc71"; // hijau
+    else if (msgType.includes("document")) typeColor = "#95a5a6"; // abu
+
+    console.log(
+        chalk.bgHex(typeColor).black(
+            ` 📅 Tanggal : ${new Date().toLocaleString()} \n` +
+            ` 💬 Pesan   : ${m.body || msgType} \n` +
+            ` 👤 Pengirim: ${pushname} \n` +
+            ` 🔑 JID     : ${senderNumber} \n` +
+            ` 🆔 LID     : ${senderLid || '-'}`
+        )
+    );
+
+    if (m.isGroup) {
+        console.log(
+            chalk.bgHex("#34495e").white(
+                ` 👥 Grup    : ${groupName} \n` +
+                ` 🏷️ GroupJID: ${m.chat}`
+            )
+        );
+    }
+
+    console.log(chalk.hex("#555")("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"));
+    console.log();
+}
         
         async function reply(text) {
             client.sendMessage(m.chat, {
